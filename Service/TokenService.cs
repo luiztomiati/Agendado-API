@@ -25,7 +25,7 @@
             new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email!),
             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
         };
-                var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWTKey:key"]!));
+                var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:key"]!));
 
                 var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
 
@@ -36,8 +36,8 @@
                 try
                 {
                     token = new JwtSecurityToken(
-                        issuer: _config["JWTTokenConfiguration:Issuer"],
-                        audience: _config["JWTTokenConfiguration:Audience"],
+                        issuer: _config["JWT:Issuer"],
+                        audience: _config["JWT:Audience"],
                         claims: claims,
                         expires: expiracao,
                         signingCredentials: credenciais

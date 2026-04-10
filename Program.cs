@@ -14,7 +14,6 @@ Env.Load();
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -36,6 +35,7 @@ builder.Services
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 
+var key = Environment.GetEnvironmentVariable("JWT__KEY");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
     opt =>
     {
@@ -45,10 +45,10 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             ValidateAudience = true,
             ValidateLifetime = true,
             ValidateIssuerSigningKey = true,
-            ValidAudience = builder.Configuration["JWTTokenConfiguration:Audience"],
-            ValidIssuer = builder.Configuration["JWTTokenConfiguration:Issuer"],
+            ValidAudience = Environment.GetEnvironmentVariable("JWT__AUDIENCE"),
+            ValidIssuer = Environment.GetEnvironmentVariable("JWT__ISSUER"),
             IssuerSigningKey = new SymmetricSecurityKey(
-                Encoding.UTF8.GetBytes(builder.Configuration["JWTKey:key"]!)),
+                Encoding.UTF8.GetBytes(key!)),
         };
     });
 builder.Services.ConfigureSwagger();
