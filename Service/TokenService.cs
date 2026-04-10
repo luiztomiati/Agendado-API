@@ -1,64 +1,71 @@
 ﻿namespace Agendado.Service
 {
     using Agendado.Dto;
+    using Agendado.Model;
+    using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
     using System.IdentityModel.Tokens.Jwt;
     using System.Security.Claims;
+    using System.Security.Cryptography;
     using System.Text;
 
     public class TokenService
     {
         private readonly IConfiguration _config;
+        private readonly UserManager<AgendadoUser> _userManager;
 
-        public TokenService(IConfiguration config)
+        public TokenService(IConfiguration config, UserManager<AgendadoUser> userManager)
         {
             _config = config;
+            _userManager = userManager;
         }
 
-        public DadosUsuarioToken GerarTokenDeUsuario(DadosLogin usuario)
+        public async Task<DadosUsuarioToken> GerarTokenDeUsuario(AgendadoUser user)
         {
-            try
+            var roles = await _userManager.GetRolesAsync(user);
+
+            var claims = new List<Claim>
+    {
+        new Claim(JwtRegisteredClaimNames.UniqueName, user.Email!),
+        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+        new Claim(ClaimTypes.NameIdentifier, user.Id)
+    };
+
+            foreach (var role in roles)
             {
-                var claims = new[]
-                {
-            new Claim("TommyLtda", "C#"),
-            new Claim(JwtRegisteredClaimNames.UniqueName, usuario.Email!),
-            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-        };
-                var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:key"]!));
-
-                var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
-
-                var expiracao = DateTime.UtcNow.AddMinutes(Convert.ToInt32(_config["JWTTokenConfiguration:ExpireInMinutes"]));
-
-                JwtSecurityToken token = null;
-
-                try
-                {
-                    token = new JwtSecurityToken(
-                        issuer: _config["JWT:Issuer"],
-                        audience: _config["JWT:Audience"],
-                        claims: claims,
-                        expires: expiracao,
-                        signingCredentials: credenciais
-                    );
-                }
-                catch (Exception exc)
-                {
-                    throw new ArgumentException("Encontrado erro ao gerar Token!", exc);
-                }
-
-                return new DadosUsuarioToken()
-                {
-                    Token = new JwtSecurityTokenHandler().WriteToken(token),
-                    Expiracao = expiracao,
-                    Autenticado = true
-                };
+                claims.Add(new Claim(ClaimTypes.Role, role));
             }
-            catch (Exception exc)
+
+            var chave = new SymmetricSecurityKey(
+                Encoding.UTF8.GetBytes(_config["JWT:KEY"]!));
+
+            var credenciais = new SigningCredentials(chave, SecurityAlgorithms.HmacSha256);
+
+            var expiracao = DateTime.UtcNow.AddMinutes(
+                Convert.ToInt32(_config["JWTTokenConfiguration:ExpireInMinutes"]));
+
+            var token = new JwtSecurityToken(
+                issuer: _config["JWT:ISSUER"],
+                audience: _config["JWT:AUDIENCE"],
+                claims: claims,
+                expires: expiracao,
+                signingCredentials: credenciais
+            );
+
+            return new DadosUsuarioToken()
             {
-                throw new ArgumentException("Erro ao gerar token", exc);
-            }
+                Token = new JwtSecurityTokenHandler().WriteToken(token),
+                Expiracao = expiracao,
+                Autenticado = true
+            };
+        }
+        public string GerarRefreshToken()
+        {
+            var bytes = new byte[128];
+            using var numeroRandomico = RandomNumberGenerator.Create();
+            numeroRandomico.GetBytes(bytes);
+            var refreshToken = Convert.ToBase64String(bytes);
+            return refreshToken;
         }
     }
 }

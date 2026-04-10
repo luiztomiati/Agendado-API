@@ -1,5 +1,4 @@
 ﻿using Agendado.Dto;
-using Agendado.Enums;
 
 namespace Agendado.Model
 {
@@ -12,7 +11,6 @@ namespace Agendado.Model
         public Guid EmpresaId { get; set; }
         public Empresa Empresa { get; set; } = null!;
         public List<Atendimento> Atendimentos { get; set; } = [];
-        public Role Role { get; set; }
         public string IdentityUserId { get; set; }
 
         public Usuario(DadosUsuarioRequest dados)

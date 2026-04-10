@@ -1,5 +1,6 @@
 using Agendado.Data;
 using Agendado.Interface;
+using Agendado.Model;
 using Agendado.Repository;
 using Agendado.Service;
 using Agendado.WebAPI.Extensions;
@@ -31,7 +32,7 @@ builder.Services.AddScoped<TokenService>();
 
 builder.Services.AddHttpContextAccessor();
 builder.Services
-    .AddIdentity<IdentityUser, IdentityRole>()
+    .AddIdentity<AgendadoUser, IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
     .AddDefaultTokenProviders();
 

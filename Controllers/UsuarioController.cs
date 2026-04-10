@@ -18,19 +18,21 @@ namespace Agendado.Controllers
         }
 
         [HttpPost]
-        
+        [Authorize(Roles = "ADMIN")]
         public IActionResult CriarUsuario(DadosUsuarioRequest dados)
         {
             var usuario = _usuarioService.CriarUsuario(dados);
             return Ok(usuario);
         }
         [HttpPut]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult EditUsuario(Guid usuarioId, DadosEditUsuario dados)
         {
             var usuario = _usuarioService.EditUsuario(usuarioId, dados);
             return Ok(usuario);
         }
         [HttpDelete]
+        [Authorize(Roles = "ADMIN")]
         public IActionResult DeleteUsuario(Guid usuarioId)
         {
             try

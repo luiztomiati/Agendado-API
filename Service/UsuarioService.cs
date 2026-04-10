@@ -1,11 +1,8 @@
-﻿using Agendado.Data;
-using Agendado.Dto;
-using Agendado.Enums;
+﻿using Agendado.Dto;
 using Agendado.Interface;
 using Agendado.Model;
-using Agendado.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
 
 namespace Agendado.Service
@@ -13,27 +10,27 @@ namespace Agendado.Service
     public class UsuarioService : IUsuarioService
     {
         private readonly IUsuarioRepository _usuarioRepository;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly UserManager<AgendadoUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAcessor;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<IdentityUser> userManager, IHttpContextAccessor httpContentAccessor)
+        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor)
         {
            
             _usuarioRepository = usuarioRepository;
             _userManager = userManager;
             _httpContextAcessor = httpContentAccessor;
         }
-
+      
         public DadosUsuarioResponse CriarUsuario(DadosUsuarioRequest dados)
         {
             var userId = _httpContextAcessor.HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
             var usuarioLogado = _usuarioRepository.GetIdentityUser(userId);
 
-            if (usuarioLogado == null || usuarioLogado.Role != Role.SUPER)
+            if (usuarioLogado == null)
                 throw new Exception("Apenas usuários SUPER podem criar novos usuários.");
 
             Usuario usuario = new Usuario(dados);
-            var identityUser = new IdentityUser
+            var identityUser = new AgendadoUser
             {
                 UserName = dados.Email,
                 Email = dados.Email

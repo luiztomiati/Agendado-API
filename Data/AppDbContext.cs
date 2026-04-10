@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Agendado.Data
 {
-    public class AppDbContext : IdentityDbContext<IdentityUser>
+    public class AppDbContext : IdentityDbContext<AgendadoUser>
     {
         public AppDbContext(DbContextOptions<AppDbContext> options) : base(options)
         {
