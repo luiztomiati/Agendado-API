@@ -1,0 +1,6 @@
+@Agendado_HostAddress = http://localhost:5179
+
+GET {{Agendado_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
