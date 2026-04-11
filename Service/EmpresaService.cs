@@ -1,6 +1,7 @@
 ﻿using Agendado.Data;
 using Agendado.Dto;
 using Agendado.Interface;
+using Agendado.Interface.Repository;
 using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
 using Sprache;
@@ -22,7 +23,7 @@ namespace Agendado.Service
             _userManager = userManager;
         }
 
-        public void CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
+        public async Task CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
         {
             try
             {
@@ -34,9 +35,7 @@ namespace Agendado.Service
                     Email = dados.Email
                 };
 
-                var result = _userManager.CreateAsync(identityUser, dados.Password)
-                                         .GetAwaiter()
-                                         .GetResult();
+                var result = await _userManager.CreateAsync(identityUser, dados.Password);
 
                 if (!result.Succeeded)
                 {
@@ -44,7 +43,7 @@ namespace Agendado.Service
                         string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
 
-                _userManager.AddToRoleAsync(identityUser, "ADMIN");
+                await _userManager.AddToRoleAsync(identityUser, "ADMIN");
 
                 Usuario usuario = new Usuario
                 {
@@ -59,7 +58,7 @@ namespace Agendado.Service
                 _empresaRepository.CriarEmpresa(empresa);
                 _usuarioRepository.CriarUsuario(usuario);
 
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (Exception e)
             {

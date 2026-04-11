@@ -1,6 +1,6 @@
 ﻿using Agendado.Dto;
 
-namespace Agendado.Interface
+namespace Agendado.Interface.Repository
 {
     public interface IUsuarioService
     {

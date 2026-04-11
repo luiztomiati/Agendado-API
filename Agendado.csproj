@@ -25,6 +25,7 @@
   <ItemGroup>
     <Folder Include="Enums\" />
     <Folder Include="Infraestructure\Security\" />
+    <Folder Include="Interface\Service\" />
   </ItemGroup>
 
 </Project>

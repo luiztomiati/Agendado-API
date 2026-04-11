@@ -1,5 +1,5 @@
 ﻿using Agendado.Dto;
-using Agendado.Interface;
+using Agendado.Interface.Repository;
 using Agendado.Service;
 using Microsoft.AspNetCore.Mvc;
 

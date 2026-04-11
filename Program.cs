@@ -1,5 +1,7 @@
 using Agendado.Data;
+using Agendado.Infraestructure;
 using Agendado.Interface;
+using Agendado.Interface.Repository;
 using Agendado.Model;
 using Agendado.Repository;
 using Agendado.Service;
@@ -56,6 +58,14 @@ builder.Services.ConfigureSwagger();
 
 
 var app = builder.Build();
+
+using (var scope = app.Services.CreateScope())
+{
+    var roleManager = scope.ServiceProvider
+        .GetRequiredService<RoleManager<IdentityRole>>();
+
+    await IdentitySeeder.SeedRoles(roleManager);
+}
 
 if (app.Environment.IsDevelopment())
 {
