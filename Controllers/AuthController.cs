@@ -3,6 +3,10 @@ using Agendado.Model;
 using Agendado.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
 
 namespace Agendado.Controllers
 {
@@ -50,6 +54,41 @@ namespace Agendado.Controllers
                 message = "Uuário logado com sucesso",
                 token = tokenDto
             });
+        }
+        [HttpPost("refresh-token")]
+        public async Task<IActionResult> RecuperaRefreshToken(DadosUsuarioToken userToken)
+        {
+            string? token = userToken.Token ?? throw new ArgumentException(nameof(userToken));
+            string? refreshToken = userToken.RefreshToken ?? throw new ArgumentException(nameof(userToken));
+            var principal = _tokenService.CapturaClaimsDoTokenExpirado(token);
+            if (principal == null)
+            {
+                return BadRequest("Token inválido.");
+            }
+
+            var novoUsuarioDTO = new AgendadoUser
+            {
+                Email = principal.Identity.Name,
+                PasswordHash = principal.Claims.FirstOrDefault(c => c.Type == "password")?.Value,
+            };
+
+            var agendamentoUser = await _userManager.FindByEmailAsync(novoUsuarioDTO.Email!);
+
+            if (agendamentoUser == null || !agendamentoUser.RefreshToken!.Equals(refreshToken) || agendamentoUser.TempoExpiracao < DateTime.UtcNow)
+            {
+                return BadRequest("Refresh token inválido.");
+            }
+
+            var novoToken = await _tokenService.GerarTokenDeUsuario(novoUsuarioDTO);
+            var novoRefreshToken = _tokenService.GerarRefreshToken();
+
+            agendamentoUser.RefreshToken = novoRefreshToken;
+            agendamentoUser.TempoExpiracao = DateTime.UtcNow.AddMinutes(double.Parse(_config["JWTTokenConfiguration:RefreshExpireInMinutes"]));
+
+         
+            await _userManager.UpdateAsync(agendamentoUser);
+
+            return Ok(new { novoToken.Token, novoRefreshToken });
         }
     }
 }

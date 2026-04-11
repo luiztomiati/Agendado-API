@@ -67,5 +67,34 @@
             var refreshToken = Convert.ToBase64String(bytes);
             return refreshToken;
         }
+
+        internal ClaimsPrincipal CapturaClaimsDoTokenExpirado(string token)
+        {
+            if (string.IsNullOrWhiteSpace(token))
+            {
+                throw new ArgumentException("O token não pode ser nulo ou vazio.", nameof(token));
+            }
+            var chave = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:KEY"]!));
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateLifetime = false, // Ignora a validação do tempo de expiração
+                ValidateIssuerSigningKey = true,
+                ValidIssuer = _config["JWT:Issuer"],
+                ValidAudience = _config["JWT:Audience"],
+                IssuerSigningKey = chave
+            };
+
+            var tokenHandlerValidator = new JwtSecurityTokenHandler();
+            var principal = tokenHandlerValidator.ValidateToken(token, tokenValidationParameters, out var securityToken);
+
+            if (securityToken is not JwtSecurityToken jwtSecurityToken ||
+                !jwtSecurityToken.Header.Alg.Equals(SecurityAlgorithms.HmacSha256, StringComparison.InvariantCultureIgnoreCase))
+            {
+                throw new SecurityTokenException("O token é inválido ou não utiliza o algoritmo esperado.");
+            }
+            return principal;
+        }
     }
 }
