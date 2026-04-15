@@ -17,16 +17,16 @@ A aplicação foi construída seguindo boas práticas de arquitetura, separaçã
 ### 🏢 Gestão de Empresas
 
 * Criação de empresas
-* Criação de usuário com perfil **SUPER** ao cadastrar uma empresa
+* Criação de usuário com perfil **ADMIN** ao cadastrar uma empresa
 * Isolamento de dados por empresa
 
 ---
 
 ### 👤 Gestão de Usuários
 
-* Criação de usuários (restrito ao perfil SUPER)
-* Edição de usuários (restrito ao perfil SUPER e ao próprio usuário)
-* Remoção de usuários (restrito ao perfil SUPER)
+* Criação de usuários (restrito ao perfil ADMIN)
+* Edição de usuários (restrito ao perfil ADMIN e ao próprio usuário)
+* Remoção de usuários (restrito ao perfil ADMIN)
 * Associação automática à empresa do usuário autenticado
 
 ---
@@ -130,7 +130,7 @@ dotnet run
 
 * [ ] Implementação completa de agendamentos
 * [ ] Controle de disponibilidade por profissional
-* [ ] Refresh Token
+* [x] Refresh Token
 * [ ] Logs estruturados
 * [ ] Deploy em ambiente cloud
 
