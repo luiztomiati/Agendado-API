@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
+using System.Security.Claims;
 using System.Text;
 
 Env.Load();
@@ -33,10 +34,12 @@ builder.Services.AddScoped<TokenService>();
 
 
 builder.Services.AddHttpContextAccessor();
-builder.Services
-    .AddIdentity<AgendadoUser, IdentityRole>()
+
+builder.Services.AddIdentityCore<AgendadoUser>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<IdentityRole>()
     .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders();
+    .AddDefaultTokenProviders()
+    .AddSignInManager<SignInManager<AgendadoUser>>();
 
 var key = Environment.GetEnvironmentVariable("JWT__KEY");
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(
@@ -53,8 +56,16 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJw
             IssuerSigningKey = new SymmetricSecurityKey(
                 Encoding.UTF8.GetBytes(key!)),
         };
+        opt.TokenValidationParameters.RoleClaimType = ClaimTypes.Role;
     });
 builder.Services.ConfigureSwagger();
+
+
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.AddServerHeader = false;
+});
+
 
 
 var app = builder.Build();
@@ -74,6 +85,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseHsts();
 
 app.UseAuthentication();
 

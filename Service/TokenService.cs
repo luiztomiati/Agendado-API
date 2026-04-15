@@ -20,7 +20,7 @@
             _userManager = userManager;
         }
 
-        public async Task<DadosUsuarioToken> GerarTokenDeUsuario(AgendadoUser user)
+        public async Task<DadosUsuarioToken> GerarTokenDeUsuarioAsync(AgendadoUser user)
         {
             var roles = await _userManager.GetRolesAsync(user);
 
@@ -79,7 +79,7 @@
             {
                 ValidateIssuer = true,
                 ValidateAudience = true,
-                ValidateLifetime = false, // Ignora a validação do tempo de expiração
+                ValidateLifetime = false,
                 ValidateIssuerSigningKey = true,
                 ValidIssuer = _config["JWT:Issuer"],
                 ValidAudience = _config["JWT:Audience"],

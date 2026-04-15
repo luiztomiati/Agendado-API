@@ -32,13 +32,13 @@ namespace Agendado.Controllers
         {
             var user = await _userManager.FindByEmailAsync(usuario.Email!) ?? throw new Exception("Usuário não foi encontrado");
             
-            var result = await _signInManager.PasswordSignInAsync(usuario.Email, usuario.Password, isPersistent: false, lockoutOnFailure: false);
+            var result = await _signInManager.CheckPasswordSignInAsync(user, usuario.Password, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
                 return BadRequest("Falha no login do usuário.");
             }
             
-            DadosUsuarioToken tokenDto = await _tokenService.GerarTokenDeUsuario(user);
+            DadosUsuarioToken tokenDto = await _tokenService.GerarTokenDeUsuarioAsync(user);
             var refreshToken = _tokenService.GerarRefreshToken();
             tokenDto.RefreshToken = refreshToken;
 
@@ -56,7 +56,7 @@ namespace Agendado.Controllers
             });
         }
         [HttpPost("refresh-token")]
-        public async Task<IActionResult> RecuperaRefreshToken(DadosUsuarioToken userToken)
+        public async Task<IActionResult> RecuperaRefreshTokenAsync(DadosUsuarioToken userToken)
         {
             string? token = userToken.Token ?? throw new ArgumentException(nameof(userToken));
             string? refreshToken = userToken.RefreshToken ?? throw new ArgumentException(nameof(userToken));
@@ -79,7 +79,7 @@ namespace Agendado.Controllers
                 return BadRequest("Refresh token inválido.");
             }
 
-            var novoToken = await _tokenService.GerarTokenDeUsuario(novoUsuarioDTO);
+            var novoToken = await _tokenService.GerarTokenDeUsuarioAsync(novoUsuarioDTO);
             var novoRefreshToken = _tokenService.GerarRefreshToken();
 
             agendamentoUser.RefreshToken = novoRefreshToken;
