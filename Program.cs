@@ -1,7 +1,7 @@
 using Agendado.Data;
 using Agendado.Infraestructure;
-using Agendado.Interface;
 using Agendado.Interface.Repository;
+using Agendado.Interface.Service;
 using Agendado.Model;
 using Agendado.Repository;
 using Agendado.Service;
@@ -30,6 +30,9 @@ builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
 builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
 builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
+builder.Services.AddScoped<IServicoService, ServicoService>();
+builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+
 builder.Services.AddScoped<TokenService>();
 
 

@@ -1,6 +1,6 @@
 ﻿using Agendado.Data;
 using Agendado.Dto;
-using Agendado.Interface;
+using Agendado.Interface.Repository;
 using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -14,58 +14,40 @@ namespace Agendado.Repository
 
         public UsuarioRepository(AppDbContext context)
         {
-            this._context = context;
+            _context = context;
         }
 
         public void CriarUsuario(Usuario dados)
         {
-            try
-            {
-                _context.Add(dados);
-            }
-            catch (Exception ex) { 
-                throw new Exception(ex.Message);
-            }
+            _context.Add(dados);
         }
 
-        public Usuario GetUsuario(Guid id)
+        public async Task<Usuario?> GetUsuarioByIdAsync(Guid id)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(f => f.Id == id)?? throw new Exception("Usuário não encontrado");
+            var usuario = _context.Usuarios.FirstOrDefault(f => f.Id == id);
             return usuario;
         }
 
-        public Usuario PutUsuario(Guid id, DadosEditUsuario dados, Usuario usuario)
+        public async Task<Usuario> UpdateUsuarioAsync(Usuario usuario)
         {
-            usuario.Nome = dados.Nome;
-            usuario.Email = dados.Email;
-            usuario.Telefone = dados.Telefone;
-            usuario.DDD = dados.DDD;
+            _context.Update(usuario);
             _context.SaveChanges();
             return usuario;
         }
-        public void SalvarUsuario(Usuario dados)
+        public async Task SalvarUsuarioAsync(Usuario dados)
         {
-            try
-            {
-                _context.Add(dados);
-                _context.SaveChanges();
-            }
-            catch (Exception ex)
-            {
-                throw new Exception(ex.Message);
-            }
+            _context.Add(dados);
+            _context.SaveChanges();
         }
-        public void DelUsuario(Guid id)
+        public async Task DeleteUsuarioAsync(Usuario usuario)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(f => f.Id == id) ?? throw new Exception("Usuário não encontrado");
             _context.Remove(usuario);
             _context.SaveChanges();
         }
 
-        public Usuario GetIdentityUser(string id)
+        public async Task<Usuario?> GetIdentityUserAsync(string id)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(f => f.IdentityUserId == id)
-                ?? throw new Exception("Usuário não foi encontrado");
+            var usuario = _context.Usuarios.FirstOrDefault(f => f.IdentityUserId == id);
             return usuario;
         }
     }

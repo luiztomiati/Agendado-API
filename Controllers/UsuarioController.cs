@@ -1,5 +1,5 @@
 ﻿using Agendado.Dto;
-using Agendado.Interface.Repository;
+using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,25 +19,40 @@ namespace Agendado.Controllers
 
         [HttpPost]
         [Authorize(Roles = "ADMIN")]
-        public IActionResult CriarUsuario(DadosUsuarioRequest dados)
-        {
-            var usuario = _usuarioService.CriarUsuario(dados);
-            return Ok(usuario);
-        }
-        [HttpPut]
-        [Authorize(Roles = "ADMIN")]
-        public IActionResult EditUsuario(Guid usuarioId, DadosEditUsuario dados)
-        {
-            var usuario = _usuarioService.EditUsuario(usuarioId, dados);
-            return Ok(usuario);
-        }
-        [HttpDelete]
-        [Authorize(Roles = "ADMIN")]
-        public IActionResult DeleteUsuario(Guid usuarioId)
+        public async Task<IActionResult> PostUsuario(DadosUsuarioRequest dados)
         {
             try
             {
-                _usuarioService.DeleteUsuario(usuarioId);
+                var usuario = await _usuarioService.CriarUsuarioAsync(dados);
+                return Ok(usuario);
+            }
+            catch (Exception ex) 
+            { 
+                return BadRequest(ex.Message);            
+            }
+        }
+        [HttpPut]
+        [Authorize(Roles = "ADMIN, USER")]
+        public async Task<IActionResult> PutUsuario(Guid usuarioId, DadosEditUsuario dados)
+        {
+            try
+            {
+                var usuario = await _usuarioService.EditarUsuarioAsync(usuarioId, dados);
+                return Ok(usuario);
+
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+          
+        }
+        [HttpDelete]
+        [Authorize(Roles = "ADMIN")]
+        public async Task<IActionResult> DeleteUsuario(Guid usuarioId)
+        {
+            try
+            {
+                await _usuarioService.DeletarUsuarioAsync(usuarioId);
                 return NoContent();
             }
             catch (Exception ex)

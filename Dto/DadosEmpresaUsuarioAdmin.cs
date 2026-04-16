@@ -16,9 +16,11 @@ namespace Agendado.Dto
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "DDD é obrigatório")]
+        [StringLength(2, MinimumLength = 2)]
         public string DDD { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Telefone é obrigatório")]
+        [RegularExpression(@"^(9\d{8}|\d{8})$", ErrorMessage = "Telefone inválido")]
         public string Telefone { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Senha é obrigatória")]

@@ -1,6 +1,6 @@
 ﻿using Agendado.Model;
 
-namespace Agendado.Interface
+namespace Agendado.Interface.Repository
 {
     public interface IEmpresaRepository
     {

@@ -1,7 +1,7 @@
 ﻿using Agendado.Data;
 using Agendado.Dto;
-using Agendado.Interface;
 using Agendado.Interface.Repository;
+using Agendado.Interface.Service;
 using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
 using Sprache;
@@ -23,7 +23,7 @@ namespace Agendado.Service
             _userManager = userManager;
         }
 
-        public async Task CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
+        public async Task CriarEmpresaUsuarioAdminAsync(DadosEmpresaUsuarioAdmin dados)
         {
             try
             {
@@ -60,9 +60,9 @@ namespace Agendado.Service
 
                 await _context.SaveChangesAsync();
             }
-            catch (Exception e)
+            catch (Exception ex)
             {
-                throw;
+                throw new Exception(ex.Message);
             }
         }
     }

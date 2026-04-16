@@ -1,5 +1,5 @@
 ﻿using Agendado.Dto;
-using Agendado.Interface.Repository;
+using Agendado.Interface.Service;
 using Agendado.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,11 +17,11 @@ namespace Agendado.Controllers
         }
 
         [HttpPost]
-        public IActionResult CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
+        public async Task<IActionResult> CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
         {
             try
             {
-                _empresaService.CriarEmpresaUsuarioAdmin(dados);
+                await _empresaService.CriarEmpresaUsuarioAdminAsync(dados);
                 return Ok();
             }
             catch (Exception ex) { 
