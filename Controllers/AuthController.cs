@@ -3,6 +3,7 @@ using Agendado.Model;
 using Agendado.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -27,6 +28,7 @@ namespace Agendado.Controllers
             _config = configuration;
         }
 
+        [EnableRateLimiting("reset-password")]
         [HttpPost("login")]
         public async Task<IActionResult> LoginAsync(DadosLogin usuario)
         {

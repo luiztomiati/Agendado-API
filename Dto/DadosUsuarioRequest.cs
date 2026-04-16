@@ -12,9 +12,11 @@ namespace Agendado.Dto
         [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email inválido")]
         public string Email { get; set; } = string.Empty;
 
+        [StringLength(2, MinimumLength = 2, ErrorMessage = "DDD inválido")]
         [Required(ErrorMessage = "DDD é obrigatório")]
         public string DDD { get; set; } = string.Empty;
 
+        [RegularExpression(@"^(9\d{8}|\d{8})$", ErrorMessage = "Telefone inválido")]
         [Required(ErrorMessage = "Telefone é obrigatório")]
         public string Telefone { get; set; } = string.Empty;
 

@@ -9,6 +9,7 @@ using Agendado.WebAPI.Extensions;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Security.Claims;
@@ -34,7 +35,6 @@ builder.Services.AddScoped<IServicoService, ServicoService>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
 
 builder.Services.AddScoped<TokenService>();
-
 
 builder.Services.AddHttpContextAccessor();
 
@@ -69,7 +69,14 @@ builder.WebHost.ConfigureKestrel(options =>
     options.AddServerHeader = false;
 });
 
-
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("reset-password", opt =>
+    {
+        opt.Window = TimeSpan.FromMinutes(5);
+        opt.PermitLimit = 3;
+    });
+});
 
 var app = builder.Build();
 

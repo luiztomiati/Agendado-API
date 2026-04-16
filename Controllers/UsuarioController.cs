@@ -2,6 +2,7 @@
 using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Agendado.Controllers
 {
@@ -62,6 +63,7 @@ namespace Agendado.Controllers
         }
 
         [HttpPut("resetar-password")]
+        [EnableRateLimiting("reset-password")]
         [Authorize(Roles = "ADMIN, USER")]
         public async Task<IActionResult> ResetarPassword(DadosResetarSenhaRequest dados)
         {
@@ -75,5 +77,34 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);
             }
         }
+        [HttpPost("esqueci-minha-senha")]
+        [EnableRateLimiting("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> EsqueciMinhaSenha(DadosResgatarSenhaRequest dados)
+        {
+            try
+            {
+                var result = await _usuarioService.ResgatarPasswordAsync(dados);
+                return Ok(result);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        [HttpPost("resetar-password-token")]
+        [EnableRateLimiting("reset-password")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ResetarPasswordToken(DadosResetarPasswordTokenRequest dados)
+        {
+            try
+            {
+                await _usuarioService.ResetarPasswordTokenAsync(dados);
+                return Ok();
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
     }
 }

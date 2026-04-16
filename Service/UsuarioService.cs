@@ -145,5 +145,31 @@ namespace Agendado.Service
                 );
             }
         }
+        public async Task<DadosResgatarSenhaResponse> ResgatarPasswordAsync(DadosResgatarSenhaRequest dados)
+        {
+            var user = await _userManager.FindByEmailAsync(dados.Email);
+
+            if (user == null)
+            {
+                return new DadosResgatarSenhaResponse
+                {
+                    EmailEnviado = false
+                };
+            }
+            
+            var token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            return new DadosResgatarSenhaResponse { EmailEnviado = true, Token = token};
+        }
+        public async Task ResetarPasswordTokenAsync(DadosResetarPasswordTokenRequest dados)
+        {
+            try
+            {
+                var usuario = await _userManager.FindByEmailAsync(dados.Email) ?? throw new Exception("Usuário não foi encontrado");
+                var result = await _userManager.ResetPasswordAsync(usuario, dados.Token, dados.Password);
+            }
+            catch (Exception ex) {
+                throw new Exception(ex.Message);
+            }
+        }
     }
 }

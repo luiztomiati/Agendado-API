@@ -8,5 +8,7 @@ namespace Agendado.Interface.Service
         Task DeletarUsuarioAsync(Guid usuarioId);
         Task<DadosEditUsuario> EditarUsuarioAsync(Guid usuarioId, DadosEditUsuario dados);
         Task ResetarPasswordAsync(DadosResetarSenhaRequest dados);
+        Task ResetarPasswordTokenAsync(DadosResetarPasswordTokenRequest dados);
+        Task<DadosResgatarSenhaResponse> ResgatarPasswordAsync(DadosResgatarSenhaRequest dados);
     }
 }
