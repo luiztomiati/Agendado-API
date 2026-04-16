@@ -16,7 +16,7 @@ namespace Agendado.Controllers
             _empresaService = empresaService;
         }
 
-        [HttpPost]
+        [HttpPost("criar")]
         public async Task<IActionResult> CriarEmpresaUsuarioAdmin(DadosEmpresaUsuarioAdmin dados)
         {
             try

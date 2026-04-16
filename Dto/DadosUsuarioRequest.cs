@@ -9,6 +9,7 @@ namespace Agendado.Dto
         public string Nome { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "Email é obrigatório")]
+        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$", ErrorMessage = "Email inválido")]
         public string Email { get; set; } = string.Empty;
 
         [Required(ErrorMessage = "DDD é obrigatório")]

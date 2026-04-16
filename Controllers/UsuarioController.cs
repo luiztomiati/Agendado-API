@@ -17,7 +17,7 @@ namespace Agendado.Controllers
             _usuarioService = usuarioService;
         }
 
-        [HttpPost]
+        [HttpPost("criar")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PostUsuario(DadosUsuarioRequest dados)
         {
@@ -31,7 +31,7 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);            
             }
         }
-        [HttpPut]
+        [HttpPut("editar")]
         [Authorize(Roles = "ADMIN, USER")]
         public async Task<IActionResult> PutUsuario(Guid usuarioId, DadosEditUsuario dados)
         {
@@ -46,7 +46,7 @@ namespace Agendado.Controllers
             }
           
         }
-        [HttpDelete]
+        [HttpDelete("deletar")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteUsuario(Guid usuarioId)
         {
@@ -58,6 +58,21 @@ namespace Agendado.Controllers
             catch (Exception ex)
             {
                 return NotFound(ex.Message);
+            }
+        }
+
+        [HttpPut("resetar-password")]
+        [Authorize(Roles = "ADMIN, USER")]
+        public async Task<IActionResult> ResetarPassword(DadosResetarSenhaRequest dados)
+        {
+            try
+            {
+                await _usuarioService.ResetarPasswordAsync(dados);
+                return Ok();
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
             }
         }
     }

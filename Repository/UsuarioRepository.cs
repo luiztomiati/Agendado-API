@@ -50,5 +50,7 @@ namespace Agendado.Repository
             var usuario = _context.Usuarios.FirstOrDefault(f => f.IdentityUserId == id);
             return usuario;
         }
+
+       
     }
 }

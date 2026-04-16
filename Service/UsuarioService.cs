@@ -130,5 +130,20 @@ namespace Agendado.Service
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId) ?? throw new Exception("Usuário não encontrado");
             await _usuarioRepository.DeleteUsuarioAsync(usuario);
         }    
+
+        public async Task ResetarPasswordAsync(DadosResetarSenhaRequest dados)
+        {
+            var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
+            var usuarioLogado = await _userManager.FindByIdAsync(userId) ?? throw new Exception("Usuário logado não localizado");
+
+            var result = await _userManager.ChangePasswordAsync(usuarioLogado, dados.PasswordAtual, dados.NovoPassword);
+
+            if (!result.Succeeded)
+            {
+                throw new Exception(
+                    string.Join(", ", result.Errors.Select(e => e.Description))
+                );
+            }
+        }
     }
 }
