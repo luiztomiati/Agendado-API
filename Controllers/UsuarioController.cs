@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -12,10 +13,12 @@ namespace Agendado.Controllers
     public class UsuarioController : ControllerBase
     {
         private IUsuarioService _usuarioService;
+        private IUsuarioRepository _usuarioRepository;
 
-        public UsuarioController(IUsuarioService usuarioService)
+        public UsuarioController(IUsuarioService usuarioService, IUsuarioRepository usuarioRepository)
         {
             _usuarioService = usuarioService;
+            _usuarioRepository = usuarioRepository;
         }
 
         [HttpPost("criar")]
@@ -100,6 +103,21 @@ namespace Agendado.Controllers
             {
                 await _usuarioService.ResetarPasswordTokenAsync(dados);
                 return Ok();
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-usuarios")]
+        [Authorize(Roles = "ADMIN,USER")]
+        public async Task<IActionResult> GetUsuarios(int page, int qtdPag)
+        {
+            try
+            {
+                var usuarios = await _usuarioService.GetUsuariosAsync(page, qtdPag);
+                return Ok(usuarios);
+
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);

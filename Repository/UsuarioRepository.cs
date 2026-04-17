@@ -1,12 +1,12 @@
-﻿using Agendado.Data;
+﻿using Agendado.Application.Dto;
+using Agendado.Data;
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
-using Microsoft.AspNetCore.Identity;
+using Agendado.Shared;
 using Microsoft.EntityFrameworkCore;
 
 namespace Agendado.Repository
 {
-    
     public class UsuarioRepository : IUsuarioRepository
     {
         private readonly AppDbContext _context;
@@ -50,6 +50,30 @@ namespace Agendado.Repository
             return usuario;
         }
 
-       
+        public async Task<ResultadoPagincao<DadosUsuarioResponse>> GetUsuariosAsync(Guid empresaId, int page, int qtdPage)
+        {
+            var query = _context.Usuarios.Where(w => w.EmpresaId == empresaId);
+
+            var total = await query.CountAsync();
+
+            var usuarios = await query
+                .Skip((page - 1) * qtdPage)
+                .Take(qtdPage)
+                .Select(s => new DadosUsuarioResponse (
+                    s.Id,
+                    s.Nome,
+                    s.Email,
+                    s.DDD,
+                    s.Telefone
+                ))
+                .ToListAsync();
+
+            return new ResultadoPagincao<DadosUsuarioResponse> {
+                Items = usuarios,
+                TotalCount = total,
+                Page = page,
+                QtdPage = qtdPage
+            };
+        }
     }
 }

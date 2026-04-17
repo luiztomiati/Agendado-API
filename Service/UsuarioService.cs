@@ -2,6 +2,7 @@
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
+using Agendado.Shared;
 using Microsoft.AspNetCore.Identity;
 using System.Net;
 using System.Security.Claims;
@@ -27,7 +28,7 @@ namespace Agendado.Service
         {
 
             var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
-            var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário logado não encontrado"); ;
+            var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário logado não encontrado");
             var userExists = await _userManager.FindByEmailAsync(dados.Email);
 
             if (userExists != null)
@@ -194,6 +195,15 @@ namespace Agendado.Service
             {
                 throw new Exception(ex.Message);
             }
+        }
+        public async Task<ResultadoPagincao<DadosUsuarioResponse>> GetUsuariosAsync(int page, int qtdPage)
+        {
+            var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
+            var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário logado não encontrado");
+
+            var usuarios = await _usuarioRepository.GetUsuariosAsync(usuarioLogado.EmpresaId, page, qtdPage);
+
+            return usuarios;
         }
     }
 }

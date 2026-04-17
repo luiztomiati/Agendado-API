@@ -1,4 +1,7 @@
-﻿using Agendado.Domain.Model;
+﻿using Agendado.Application.Dto;
+using Agendado.Domain.Model;
+using Agendado.Shared;
+
 
 namespace Agendado.Interface.Repository
 {
@@ -10,6 +13,6 @@ namespace Agendado.Interface.Repository
         Task<Usuario?> GetUsuarioByIdAsync(Guid id);
         Task<Usuario?> GetIdentityUserAsync(string id);
         void CriarUsuario (Usuario usuario);
-
+        Task<ResultadoPagincao<DadosUsuarioResponse>> GetUsuariosAsync(Guid empresaId, int page, int qtdPage);
     }
 }
