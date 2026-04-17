@@ -1,10 +1,8 @@
 using Agendado.Data;
-using Agendado.Extensions.Email;
-using Agendado.Extensions.Repository;
-using Agendado.Extensions.Service;
+using Agendado.Domain.Model;
+using Agendado.Extensions.DependencyInjection;
 using Agendado.Extensions.Swagger;
 using Agendado.Infraestructure;
-using Agendado.Model;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;

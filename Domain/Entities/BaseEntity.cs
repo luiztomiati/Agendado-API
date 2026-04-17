@@ -1,4 +1,4 @@
-﻿namespace Agendado.Model
+﻿namespace Agendado.Domain.Model
 {
     public abstract class  BaseEntity
     {

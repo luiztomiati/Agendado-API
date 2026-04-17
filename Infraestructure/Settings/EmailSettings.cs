@@ -2,7 +2,7 @@
 using System.Net.Mail;
 using System.Net.NetworkInformation;
 
-namespace Agendado.Model
+namespace Agendado.Infraestructure.Settings
 {
     public class EmailSettings
     {

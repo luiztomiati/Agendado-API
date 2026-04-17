@@ -1,7 +1,7 @@
 ﻿namespace Agendado.Service
 {
-    using Agendado.Dto;
-    using Agendado.Model;
+    using Agendado.Application.Dto;
+    using Agendado.Domain.Model;
     using Microsoft.AspNetCore.Identity;
     using Microsoft.IdentityModel.Tokens;
     using System.IdentityModel.Tokens.Jwt;

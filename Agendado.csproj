@@ -23,8 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Enums\" />
-    <Folder Include="Infraestructure\Security\" />
+    <Folder Include="App\" />
   </ItemGroup>
 
 </Project>

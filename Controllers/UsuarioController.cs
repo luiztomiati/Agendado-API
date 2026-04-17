@@ -1,4 +1,4 @@
-﻿using Agendado.Dto;
+﻿using Agendado.Application.Dto;
 using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

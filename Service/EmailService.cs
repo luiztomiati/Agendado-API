@@ -1,5 +1,5 @@
-﻿using Agendado.Interface.Service;
-using Agendado.Model;
+﻿using Agendado.Infraestructure.Settings;
+using Agendado.Interface.Service;
 using Microsoft.Extensions.Options;
 using System.Net;
 using System.Net.Mail;

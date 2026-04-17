@@ -1,6 +1,6 @@
-﻿using Agendado.Dto;
+﻿using Agendado.Application.Dto;
 
-namespace Agendado.Model
+namespace Agendado.Domain.Model
 {
     public class Usuario : BaseEntity
     {

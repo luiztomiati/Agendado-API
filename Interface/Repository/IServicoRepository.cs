@@ -1,5 +1,4 @@
-﻿using Agendado.Dto;
-using Agendado.Model;
+﻿using Agendado.Domain.Model;
 
 namespace Agendado.Interface.Repository
 {

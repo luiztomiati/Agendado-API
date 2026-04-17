@@ -1,4 +1,4 @@
-﻿using Agendado.Model;
+﻿using Agendado.Domain.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 

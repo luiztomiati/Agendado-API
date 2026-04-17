@@ -1,5 +1,5 @@
-﻿using Agendado.Dto;
-using Agendado.Model;
+﻿using Agendado.Application.Dto;
+using Agendado.Domain.Model;
 using Agendado.Service;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

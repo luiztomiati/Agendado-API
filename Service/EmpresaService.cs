@@ -1,8 +1,8 @@
-﻿using Agendado.Data;
-using Agendado.Dto;
+﻿using Agendado.Application.Dto;
+using Agendado.Data;
+using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
-using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
 using Sprache;
 

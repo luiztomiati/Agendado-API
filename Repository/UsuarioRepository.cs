@@ -1,7 +1,6 @@
 ﻿using Agendado.Data;
-using Agendado.Dto;
+using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
-using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 

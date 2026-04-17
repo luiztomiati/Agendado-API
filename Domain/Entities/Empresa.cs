@@ -1,6 +1,4 @@
-﻿using Agendado.Dto;
-
-namespace Agendado.Model
+﻿namespace Agendado.Domain.Model
 {
     public class Empresa: BaseEntity
     {

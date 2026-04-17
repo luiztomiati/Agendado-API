@@ -1,5 +1,4 @@
-﻿
-namespace Agendado.Dto
+﻿namespace Agendado.Application.Dto
 {
     public class DadosUsuarioResponse
     {

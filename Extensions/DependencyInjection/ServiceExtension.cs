@@ -1,7 +1,7 @@
 ﻿using Agendado.Interface.Service;
 using Agendado.Service;
 
-namespace Agendado.Extensions.Service
+namespace Agendado.Extensions.DependencyInjection
 {
     public static class ServiceExtension
     {

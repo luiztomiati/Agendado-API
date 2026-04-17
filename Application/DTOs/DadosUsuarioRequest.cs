@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Agendado.Dto
+namespace Agendado.Application.Dto
 {
     public class DadosUsuarioRequest
     {

@@ -1,7 +1,7 @@
 ﻿using Agendado.Interface.Repository;
 using Agendado.Repository;
 
-namespace Agendado.Extensions.Repository
+namespace Agendado.Extensions.DependencyInjection
 {
     public static class RepositoryExtension
     {

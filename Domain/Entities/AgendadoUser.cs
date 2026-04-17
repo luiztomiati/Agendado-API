@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 
-namespace Agendado.Model
+namespace Agendado.Domain.Model
 {
     public class AgendadoUser : IdentityUser
     {

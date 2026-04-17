@@ -1,4 +1,4 @@
-﻿using Agendado.Dto;
+﻿using Agendado.Application.Dto;
 
 namespace Agendado.Interface.Service
 {

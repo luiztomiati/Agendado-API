@@ -1,7 +1,7 @@
-﻿using Agendado.Dto;
+﻿using Agendado.Application.Dto;
+using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
-using Agendado.Model;
 using System.Security.Claims;
 
 namespace Agendado.Service

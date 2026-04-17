@@ -1,6 +1,6 @@
 ﻿using Agendado.Data;
+using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
-using Agendado.Model;
 using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace Agendado.Repository

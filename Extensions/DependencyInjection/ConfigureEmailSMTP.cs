@@ -1,6 +1,6 @@
-﻿using Agendado.Model;
+﻿using Agendado.Infraestructure.Settings;
 
-namespace Agendado.Extensions.Email
+namespace Agendado.Extensions.DependencyInjection
 {
     public static class ConfigureEmailSMTP
     {
