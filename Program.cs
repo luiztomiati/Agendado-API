@@ -1,4 +1,5 @@
 using Agendado.Data;
+using Agendado.Extensions;
 using Agendado.Infraestructure;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
@@ -33,6 +34,7 @@ builder.Services.AddScoped<IEmpresaService, EmpresaService>();
 builder.Services.AddScoped<IUsuarioService, UsuarioService>();
 builder.Services.AddScoped<IServicoService, ServicoService>();
 builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 
 builder.Services.AddScoped<TokenService>();
 
@@ -78,16 +80,7 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
-var smtpPort = Environment.GetEnvironmentVariable("SMTP_PORT");
-int.TryParse(smtpPort, out int port);
-
-builder.Services.AddSingleton(new EmailSettings
-{
-    SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? "",
-    Port = port,
-    Email = Environment.GetEnvironmentVariable("SMTP_EMAIL") ?? "",
-    Password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? ""
-});
+builder.Services.AddEmailConfiguration(builder.Configuration);
 
 var app = builder.Build();
 

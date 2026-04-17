@@ -13,9 +13,9 @@ namespace Agendado.Service
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly UserManager<AgendadoUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAcessor;
-        private readonly EmailSettings _emailSettings;
+        private readonly IEmailService _emailSettings;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor, EmailSettings emailSettings)
+        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor, IEmailService emailSettings)
         {
 
             _usuarioRepository = usuarioRepository;

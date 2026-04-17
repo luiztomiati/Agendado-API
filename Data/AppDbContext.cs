@@ -15,6 +15,7 @@ namespace Agendado.Data
         public DbSet<Atendimento> Atendimentos { get; set; }
         public DbSet<Agenda> Agenda { get; set; }
         public DbSet<Empresa> Empresas { get; set; }
+        public DbSet<ServicoUsuario> ServicoUsuarios { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
