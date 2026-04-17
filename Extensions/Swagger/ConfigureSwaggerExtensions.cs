@@ -1,6 +1,6 @@
 ﻿using Microsoft.OpenApi.Models;
 
-namespace Agendado.WebAPI.Extensions
+namespace Agendado.Extensions.Swagger
 {
     public static class ConfigureSwaggerExtensions
     {

@@ -1,6 +1,6 @@
 ﻿using Agendado.Model;
 
-namespace Agendado.Extensions
+namespace Agendado.Extensions.Email
 {
     public static class ConfigureEmailSMTP
     {

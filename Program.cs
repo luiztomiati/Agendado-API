@@ -1,12 +1,10 @@
 using Agendado.Data;
-using Agendado.Extensions;
+using Agendado.Extensions.Email;
+using Agendado.Extensions.Repository;
+using Agendado.Extensions.Service;
+using Agendado.Extensions.Swagger;
 using Agendado.Infraestructure;
-using Agendado.Interface.Repository;
-using Agendado.Interface.Service;
 using Agendado.Model;
-using Agendado.Repository;
-using Agendado.Service;
-using Agendado.WebAPI.Extensions;
 using DotNetEnv;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
@@ -28,15 +26,9 @@ var connectionString = builder.Configuration.GetConnectionString("Connection");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(connectionString));
-builder.Services.AddScoped<IUsuarioRepository, UsuarioRepository>();
-builder.Services.AddScoped<IEmpresaRepository, EmpresaRepository>();
-builder.Services.AddScoped<IEmpresaService, EmpresaService>();
-builder.Services.AddScoped<IUsuarioService, UsuarioService>();
-builder.Services.AddScoped<IServicoService, ServicoService>();
-builder.Services.AddScoped<IServicoRepository, ServicoRepository>();
-builder.Services.AddScoped<IEmailService, EmailService>();
 
-builder.Services.AddScoped<TokenService>();
+builder.Services.AddRepositories();
+builder.Services.AddServices();
 
 builder.Services.AddHttpContextAccessor();
 
