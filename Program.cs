@@ -78,6 +78,17 @@ builder.Services.AddRateLimiter(options =>
     });
 });
 
+var smtpPort = Environment.GetEnvironmentVariable("SMTP_PORT");
+int.TryParse(smtpPort, out int port);
+
+builder.Services.AddSingleton(new EmailSettings
+{
+    SmtpServer = Environment.GetEnvironmentVariable("SMTP_SERVER") ?? "",
+    Port = port,
+    Email = Environment.GetEnvironmentVariable("SMTP_EMAIL") ?? "",
+    Password = Environment.GetEnvironmentVariable("SMTP_PASSWORD") ?? ""
+});
+
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())

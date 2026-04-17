@@ -3,6 +3,7 @@ using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
 using Agendado.Model;
 using Microsoft.AspNetCore.Identity;
+using System.Net;
 using System.Security.Claims;
 
 namespace Agendado.Service
@@ -12,15 +13,16 @@ namespace Agendado.Service
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly UserManager<AgendadoUser> _userManager;
         private readonly IHttpContextAccessor _httpContextAcessor;
+        private readonly EmailSettings _emailSettings;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor)
+        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor, EmailSettings emailSettings)
         {
-           
+
             _usuarioRepository = usuarioRepository;
             _userManager = userManager;
             _httpContextAcessor = httpContentAccessor;
+            _emailSettings = emailSettings;
         }
-
         public async Task<DadosUsuarioResponse> CriarUsuarioAsync(DadosUsuarioRequest dados)
         {
 
@@ -55,7 +57,7 @@ namespace Agendado.Service
                 usuario.EmpresaId = usuarioLogado.EmpresaId;
 
                 await _usuarioRepository.SalvarUsuarioAsync(usuario);
-                return new DadosUsuarioResponse(usuario.Id,usuario.Nome, usuario.Telefone, usuario.DDD, usuario.Email);
+                return new DadosUsuarioResponse(usuario.Id, usuario.Nome, usuario.Telefone, usuario.DDD, usuario.Email);
             }
             catch (Exception ex)
             {
@@ -129,7 +131,7 @@ namespace Agendado.Service
         {
             var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId) ?? throw new Exception("Usuário não encontrado");
             await _usuarioRepository.DeleteUsuarioAsync(usuario);
-        }    
+        }
 
         public async Task ResetarPasswordAsync(DadosResetarSenhaRequest dados)
         {
@@ -156,18 +158,40 @@ namespace Agendado.Service
                     EmailEnviado = false
                 };
             }
-            
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            return new DadosResgatarSenhaResponse { EmailEnviado = true, Token = token};
+
+            string corpoHtml = $@"
+    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; text-align: center; border: 1px solid #eee; padding: 20px;'>
+        <h2 style='color: #333;'>Redefinição de Senha</h2>
+        <p style='color: #666;'>Você solicitou a recuperação de senha para sua conta no <strong>Agendado</strong>.</p>
+        <p style='color: #666;'>Clique no botão abaixo para escolher uma nova senha:</p>
+        
+        <div style='margin: 30px 0;'>
+            <a href='{token}' 
+               style='background-color: #007bff; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>
+               Redefinir Minha Senha
+            </a>
+        </div>
+        
+        <p style='font-size: 12px; color: #999;'>Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
+        <p style='font-size: 12px; color: #007bff; word-break: break-all;'>{token}</p>
+        
+        <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;' />
+        <p style='font-size: 12px; color: #999;'>Se você não solicitou isso, pode ignorar este e-mail com segurança.</p>
+    </div>";
+
+            await _emailSettings.EnviarEmailAsync(new List<string> { user.Email }, "Esqueci minha senha", corpoHtml, null);
+            return new DadosResgatarSenhaResponse { EmailEnviado = true, Token = token };
         }
         public async Task ResetarPasswordTokenAsync(DadosResetarPasswordTokenRequest dados)
         {
             try
             {
                 var usuario = await _userManager.FindByEmailAsync(dados.Email) ?? throw new Exception("Usuário não foi encontrado");
-                var result = await _userManager.ResetPasswordAsync(usuario, dados.Token, dados.Password);
+                var result = await _userManager.ResetPasswordAsync(usuario, dados.Token, dados.NovoPassword);
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
                 throw new Exception(ex.Message);
             }
         }
