@@ -12,6 +12,7 @@ namespace Agendado.Extensions.DependencyInjection
             services.AddScoped<IServicoService, ServicoService>();
             services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<TokenService>();
+            services.AddScoped<IServicoUsuarioService, ServicoUsuarioService>();
 
             return services;
         }

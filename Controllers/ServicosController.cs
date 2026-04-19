@@ -31,7 +31,7 @@ namespace Agendado.Controllers
             }
 
         }
-        [HttpPut("editar")]
+        [HttpPut("editar/{id}")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> PutServico(Guid id, DadosServico dados)
         {
@@ -45,7 +45,7 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);
             }
         }
-        [HttpDelete("deletar")]
+        [HttpDelete("deletar/{id}")]
         [Authorize(Roles = "ADMIN")]
         public async Task<IActionResult> DeleteServico(Guid id)
         {
@@ -59,6 +59,5 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);
             }
         }
-
     }
 }

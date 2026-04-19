@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Agendado.Migrations
 {
     /// <inheritdoc />
-    public partial class CriacaoServicoUsuario : Migration
+    public partial class criacaoServicoUsuario : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,6 @@ namespace Agendado.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     UsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
                     ServicoId = table.Column<Guid>(type: "uuid", nullable: false),
-                    ServicosId = table.Column<Guid>(type: "uuid", nullable: false),
                     DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -26,8 +25,8 @@ namespace Agendado.Migrations
                 {
                     table.PrimaryKey("PK_ServicoUsuarios", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ServicoUsuarios_Servicos_ServicosId",
-                        column: x => x.ServicosId,
+                        name: "FK_ServicoUsuarios_Servicos_ServicoId",
+                        column: x => x.ServicoId,
                         principalTable: "Servicos",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -40,9 +39,9 @@ namespace Agendado.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_ServicoUsuarios_ServicosId",
+                name: "IX_ServicoUsuarios_ServicoId",
                 table: "ServicoUsuarios",
-                column: "ServicosId");
+                column: "ServicoId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_ServicoUsuarios_UsuarioId",

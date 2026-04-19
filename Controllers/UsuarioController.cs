@@ -35,13 +35,13 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);            
             }
         }
-        [HttpPut("editar")]
+        [HttpPut("editar/{id}")]
         [Authorize(Roles = "ADMIN, USER")]
-        public async Task<IActionResult> PutUsuario(Guid usuarioId, DadosEditUsuario dados)
+        public async Task<IActionResult> PutUsuario(Guid id, DadosEditUsuario dados)
         {
             try
             {
-                var usuario = await _usuarioService.EditarUsuarioAsync(usuarioId, dados);
+                var usuario = await _usuarioService.EditarUsuarioAsync(id, dados);
                 return Ok(usuario);
 
             }catch(Exception ex)
@@ -50,13 +50,13 @@ namespace Agendado.Controllers
             }
           
         }
-        [HttpDelete("deletar")]
+        [HttpDelete("deletar/{id}")]
         [Authorize(Roles = "ADMIN")]
-        public async Task<IActionResult> DeleteUsuario(Guid usuarioId)
+        public async Task<IActionResult> DeleteUsuario(Guid id)
         {
             try
             {
-                await _usuarioService.DeletarUsuarioAsync(usuarioId);
+                await _usuarioService.DeletarUsuarioAsync(id);
                 return NoContent();
             }
             catch (Exception ex)

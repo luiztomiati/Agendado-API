@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Service;
 
 namespace Agendado.Domain.Model
 {

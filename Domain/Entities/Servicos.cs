@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Service;
 
 namespace Agendado.Domain.Model
 {
@@ -19,6 +20,5 @@ namespace Agendado.Domain.Model
             TempoDuracao = dados.TempoDuracao;
         }
         public Servicos() { }
-
     }
 }
