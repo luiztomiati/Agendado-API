@@ -1,6 +1,7 @@
 ﻿using Agendado.Data;
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
+using Microsoft.EntityFrameworkCore;
 
 namespace Agendado.Repository
 {
@@ -17,6 +18,10 @@ namespace Agendado.Repository
         public void CriarEmpresa (Empresa empresa)
         {
             _context.Add(empresa);
+        }
+        public async Task<Empresa?> GetEmpresaByIdAsync(Guid id)
+        {
+            return await _context.Empresas.FirstOrDefaultAsync(f => f.Id == id);
         }
     }
 }

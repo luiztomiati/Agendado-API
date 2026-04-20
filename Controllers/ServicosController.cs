@@ -59,5 +59,33 @@ namespace Agendado.Controllers
                 return BadRequest(ex.Message);
             }
         }
+
+        [HttpGet("get-servicoId/{servicoId}")]
+        [Authorize(Roles = "ADMIN, USER")]
+        public async Task<IActionResult> GetServicoById(Guid servicoId)
+        {
+            try 
+            {
+                var servico = await _servicoService.GetServicoByIdAsync(servicoId);
+                return Ok(servico);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-servicos")]
+        [Authorize(Roles = "ADMIN, USER")]
+        public async Task<IActionResult> GetServicos(int page, int qtdPag)
+        {
+            try
+            {
+                var servico = await _servicoService.ListServicosAsync(page, qtdPag);
+                return Ok(servico);
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
     }
 }

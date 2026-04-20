@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Shared;
 
 namespace Agendado.Interface.Service
 {
@@ -7,5 +8,7 @@ namespace Agendado.Interface.Service
         Task CriarServicoAsync(DadosServico dados);
         Task DeletarServicoAsync(Guid id);
         Task EditarServicoAsync(Guid id, DadosServico dados);
+        Task<DadosServico> GetServicoByIdAsync(Guid id);
+        Task<ResultadoPagincao<DadosServico>> ListServicosAsync(int page, int qtdPag);
     }
 }

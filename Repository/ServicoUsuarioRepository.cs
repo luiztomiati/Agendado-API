@@ -1,8 +1,6 @@
 ﻿using Agendado.Data;
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
-using Microsoft.AspNetCore.Http.HttpResults;
-using Microsoft.EntityFrameworkCore;
 
 namespace Agendado.Repository
 {
@@ -17,17 +15,8 @@ namespace Agendado.Repository
 
         public async Task VincularServicoUsuarioAsync(ServicoUsuario servicoUsuario)
         {
-            try
-            {
-                _context.Add(servicoUsuario);
-            
-                await _context.SaveChangesAsync();
-
-            }catch(Exception e)
-            {
-                Console.WriteLine($"ERRO NO BANCO: {e.InnerException?.Message ?? e.Message}");
-                throw;
-            }
+            _context.Add(servicoUsuario);
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> ExisteServicoUsuarioAsync(Guid usuarioId, Guid servicoId)

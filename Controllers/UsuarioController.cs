@@ -110,7 +110,7 @@ namespace Agendado.Controllers
         }
 
         [HttpGet("get-usuarios")]
-        [Authorize(Roles = "ADMIN,USER")]
+        [Authorize(Roles = "ADMIN, USER")]
         public async Task<IActionResult> GetUsuarios(int page, int qtdPag)
         {
             try
@@ -118,6 +118,20 @@ namespace Agendado.Controllers
                 var usuarios = await _usuarioService.GetUsuariosAsync(page, qtdPag);
                 return Ok(usuarios);
 
+            }catch(Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+
+        [HttpGet("get-usuarioId/{usuarioId}")]
+        [Authorize(Roles = "ADMIN, USER")]
+        public async Task<IActionResult> GetUsuarioById(Guid usuarioId)
+        {
+            try
+            {
+                var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
+                return Ok();
             }catch(Exception ex)
             {
                 return BadRequest(ex.Message);

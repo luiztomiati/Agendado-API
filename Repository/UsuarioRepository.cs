@@ -23,30 +23,29 @@ namespace Agendado.Repository
 
         public async Task<Usuario?> GetUsuarioByIdAsync(Guid id)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(f => f.Id == id);
-            return usuario;
+            return _context.Usuarios.FirstOrDefault(f => f.Id == id);
         }
 
         public async Task<Usuario> UpdateUsuarioAsync(Usuario usuario)
         {
             _context.Update(usuario);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             return usuario;
         }
         public async Task SalvarUsuarioAsync(Usuario dados)
         {
             _context.Add(dados);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
         public async Task DeleteUsuarioAsync(Usuario usuario)
         {
             _context.Remove(usuario);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public async Task<Usuario?> GetIdentityUserAsync(string id)
         {
-            var usuario = _context.Usuarios.FirstOrDefault(f => f.IdentityUserId == id);
+            var usuario = await _context.Usuarios.FirstOrDefaultAsync(f => f.IdentityUserId == id);
             return usuario;
         }
 

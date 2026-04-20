@@ -2,6 +2,7 @@
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
+using Agendado.Shared;
 using System.Security.Claims;
 
 namespace Agendado.Service
@@ -11,12 +12,14 @@ namespace Agendado.Service
         private readonly IHttpContextAccessor _httpContextAcessor;
         private readonly IUsuarioRepository _usuarioRepository;
         private readonly IServicoRepository _servicoRepository;
+        private readonly IEmpresaRepository _empresaRepository;
 
-        public ServicoService(IHttpContextAccessor httpContextAcessor, IUsuarioRepository usuarioRepository, IServicoRepository servicoRepository)
+        public ServicoService(IHttpContextAccessor httpContextAcessor, IUsuarioRepository usuarioRepository, IServicoRepository servicoRepository, IEmpresaRepository empresaRepository)
         {
             _httpContextAcessor = httpContextAcessor;
             _usuarioRepository = usuarioRepository;
             _servicoRepository = servicoRepository;
+            _empresaRepository = empresaRepository;
         }
 
         public async Task CriarServicoAsync(DadosServico dados)
@@ -43,7 +46,26 @@ namespace Agendado.Service
         public async Task DeletarServicoAsync(Guid id) {
             var servico = await _servicoRepository.GetServicoByIdAsync(id) ?? throw new KeyNotFoundException("Serviço não encontrado");
             await _servicoRepository.DeleteServicoAsync(servico);
-           
+        }
+
+        public async Task<DadosServico> GetServicoByIdAsync(Guid id)
+        {
+            var servico = await _servicoRepository.GetServicoByIdAsync(id) ?? throw new Exception("Serviço não encontrado");
+            return new DadosServico
+            (   servico.Nome,
+                servico.Descricao,
+                servico.TempoDuracao,
+                servico.Valor
+            );
+        }
+
+        public async Task<ResultadoPagincao<DadosServico>> ListServicosAsync(int page, int qtdPag )
+        {
+            var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
+            var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário não autenticado");
+            var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioLogado.Id) ?? throw new Exception("Usuário não encontrado");
+
+            return await _servicoRepository.GetServicosAsync(usuario.EmpresaId,page, qtdPag);
         }
     }
 }
