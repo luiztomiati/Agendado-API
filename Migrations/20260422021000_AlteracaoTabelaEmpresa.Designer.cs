@@ -3,6 +3,7 @@ using System;
 using Agendado.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agendado.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260422021000_AlteracaoTabelaEmpresa")]
+    partial class AlteracaoTabelaEmpresa
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -216,15 +219,7 @@ namespace Agendado.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<string>("Bairro")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Cep")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Cidade")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -234,19 +229,11 @@ namespace Agendado.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Logradouro")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Numero")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("Uf")
                         .IsRequired()
                         .HasColumnType("text");
 

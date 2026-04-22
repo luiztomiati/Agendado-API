@@ -4,10 +4,20 @@ namespace Agendado.Application.Dto
 {
     public class DadosEmpresaUsuarioAdmin
     {
+        //Empresa
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "O nome deve ter entre 3 e 100 caracteres")]
         public string NomeEmpresa { get; set; } = string.Empty;
 
+        [Required(ErrorMessage = "O CEP é obrigatório")]
+        [StringLength(9, MinimumLength = 8, ErrorMessage = "O CEP deve ter entre 8 e 9 caracteres")]
+        public string Cep { get; set; } = string.Empty;
+
+
+        [Required(ErrorMessage = "O número é obrigatório")]
+        public string Numero {  get; set; } = string.Empty;
+
+        // Usuario ADMIN
         [Required(ErrorMessage = "O nome é obrigatório")]
         [StringLength(100, MinimumLength = 3, ErrorMessage = "O nome deve ter entre 3 e 100 caracteres")]
         public string NomeUsuario { get; set; } = string.Empty;

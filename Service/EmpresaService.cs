@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Application.DTOs;
 using Agendado.Data;
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
@@ -14,20 +15,26 @@ namespace Agendado.Service
         private readonly IEmpresaRepository _empresaRepository;
         private readonly UserManager<AgendadoUser> _userManager;
         private readonly AppDbContext _context;
+        private readonly ICepService _cepService;
 
-        public EmpresaService(IUsuarioRepository usuarioRepository, IEmpresaRepository empresaRepository, AppDbContext context, UserManager<AgendadoUser> userManager)
+        public EmpresaService(IUsuarioRepository usuarioRepository, IEmpresaRepository empresaRepository, AppDbContext context, UserManager<AgendadoUser> userManager, ICepService cepService)
         {
             _usuarioRepository = usuarioRepository;
             _empresaRepository = empresaRepository;
             _context = context;
             _userManager = userManager;
+            _cepService = cepService;
         }
 
         public async Task CriarEmpresaUsuarioAdminAsync(DadosEmpresaUsuarioAdmin dados)
         {
             try
             {
-                Empresa empresa = new Empresa { Nome = dados.NomeEmpresa };
+                var viaCep = await _cepService.VerificaCepAsync(dados.Cep);
+
+                if (viaCep == null) throw new Exception("Cep não foi localizado");
+
+                Empresa empresa = new Empresa(dados.NomeEmpresa,dados.Numero,dados.Cep,viaCep.Localidade,viaCep.Uf,viaCep.Logradouro,viaCep.Bairro);
 
                 var identityUser = new AgendadoUser
                 {
