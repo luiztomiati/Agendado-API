@@ -3,6 +3,7 @@ using System;
 using Agendado.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agendado.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260423002944_CriacaoCampoPrimeiroLogin")]
+    partial class CriacaoCampoPrimeiroLogin
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,7 +68,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Agenda", (string)null);
+                    b.ToTable("Agenda");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.AgendadoUser", b =>
@@ -172,7 +175,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("UsuariosId");
 
-                    b.ToTable("Atendimentos", (string)null);
+                    b.ToTable("Atendimentos");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Cliente", b =>
@@ -210,7 +213,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Cliente", (string)null);
+                    b.ToTable("Cliente");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Empresa", b =>
@@ -255,7 +258,7 @@ namespace Agendado.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empresas", (string)null);
+                    b.ToTable("Empresas");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.ServicoUsuario", b =>
@@ -282,7 +285,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("ServicoUsuarios", (string)null);
+                    b.ToTable("ServicoUsuarios");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Servicos", b =>
@@ -318,7 +321,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Servicos", (string)null);
+                    b.ToTable("Servicos");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>
@@ -360,7 +363,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

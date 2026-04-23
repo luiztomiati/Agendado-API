@@ -19,11 +19,5 @@ namespace Agendado.Application.Dto
         [RegularExpression(@"^(9\d{8}|\d{8})$", ErrorMessage = "Telefone inválido")]
         [Required(ErrorMessage = "Telefone é obrigatório")]
         public string Telefone { get; set; } = string.Empty;
-
-        [Required(ErrorMessage = "Senha é obrigatória")]
-        [StringLength(64, MinimumLength = 8, ErrorMessage = "A senha deve conter ao menos 8 caracteres")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
-        ErrorMessage = "A senha deve conter ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")]
-        public string Password { get; set; } = string.Empty;
     }
 }

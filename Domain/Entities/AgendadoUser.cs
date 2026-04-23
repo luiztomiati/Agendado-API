@@ -6,5 +6,6 @@ namespace Agendado.Domain.Model
     {
         public string? RefreshToken { get; set; }
         public DateTime? TempoExpiracao { get; set; }
+        public bool PrimeiroLogin { get; set; } = true;
     }
 }

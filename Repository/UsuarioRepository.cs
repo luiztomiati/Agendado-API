@@ -74,5 +74,11 @@ namespace Agendado.Repository
                 QtdPage = qtdPage
             };
         }
+
+        public async Task UpdateUsuarioPrimeiroLoginAsync(AgendadoUser usuario)
+        {
+            _context.Add(usuario.PrimeiroLogin = true);
+            await _context.SaveChangesAsync();
+        }
     }
 }

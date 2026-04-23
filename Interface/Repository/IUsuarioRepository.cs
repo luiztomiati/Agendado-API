@@ -14,5 +14,6 @@ namespace Agendado.Interface.Repository
         Task<Usuario?> GetIdentityUserAsync(string id);
         void CriarUsuario (Usuario usuario);
         Task<ResultadoPagincao<DadosUsuarioResponse>> GetUsuariosAsync(Guid empresaId, int page, int qtdPage);
+        Task UpdateUsuarioPrimeiroLoginAsync(AgendadoUser usuario);
     }
 }
