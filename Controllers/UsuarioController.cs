@@ -23,6 +23,7 @@ namespace Agendado.Controllers
 
         [HttpPost("criar")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> PostUsuario(DadosUsuarioRequest dados)
         {
             try
@@ -37,6 +38,7 @@ namespace Agendado.Controllers
         }
         [HttpPut("editar/{id}")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> PutUsuario(Guid id, DadosEditUsuario dados)
         {
             try
@@ -52,6 +54,7 @@ namespace Agendado.Controllers
         }
         [HttpDelete("deletar/{id}")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> DeleteUsuario(Guid id)
         {
             try
@@ -68,6 +71,7 @@ namespace Agendado.Controllers
         [HttpPut("resetar-password")]
         [EnableRateLimiting("reset-password")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> ResetarPassword(DadosResetarSenhaRequest dados)
         {
             try
@@ -111,6 +115,7 @@ namespace Agendado.Controllers
 
         [HttpGet("get-usuarios")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> GetUsuarios(int page, int qtdPag)
         {
             try
@@ -126,6 +131,7 @@ namespace Agendado.Controllers
 
         [HttpGet("get-usuarioId/{usuarioId}")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> GetUsuarioById(Guid usuarioId)
         {
             try

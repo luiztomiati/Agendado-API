@@ -18,6 +18,7 @@ namespace Agendado.Controllers
         [HttpGet]
         [Authorize(Roles = "ADMIN")]
         [Route("clientes/{page}/{qtdPag}")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> GetClientes(int page, int qtdPag)
         {
             try

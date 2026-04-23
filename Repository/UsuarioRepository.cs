@@ -77,7 +77,7 @@ namespace Agendado.Repository
 
         public async Task UpdateUsuarioPrimeiroLoginAsync(AgendadoUser usuario)
         {
-            _context.Add(usuario.PrimeiroLogin = true);
+            _context.Update(usuario);
             await _context.SaveChangesAsync();
         }
     }

@@ -17,6 +17,7 @@ namespace Agendado.Controllers
 
         [HttpPost("usuarios/{usuarioId}/servicos/{servicoId}")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> PostServicoUsuario(Guid usuarioId, Guid servicoId)
         {
             try

@@ -18,6 +18,7 @@ namespace Agendado.Controllers
 
         [HttpPost("criar")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> PostServico(DadosServico dados)
         {
             try
@@ -33,6 +34,7 @@ namespace Agendado.Controllers
         }
         [HttpPut("editar/{id}")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> PutServico(Guid id, DadosServico dados)
         {
             try
@@ -47,6 +49,7 @@ namespace Agendado.Controllers
         }
         [HttpDelete("deletar/{id}")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> DeleteServico(Guid id)
         {
             try
@@ -62,6 +65,7 @@ namespace Agendado.Controllers
 
         [HttpGet("get-servicoId/{servicoId}")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> GetServicoById(Guid servicoId)
         {
             try 
@@ -76,6 +80,7 @@ namespace Agendado.Controllers
 
         [HttpGet("get-servicos")]
         [Authorize(Roles = "ADMIN, USER")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> GetServicos(int page, int qtdPag)
         {
             try

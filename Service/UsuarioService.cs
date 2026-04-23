@@ -64,7 +64,7 @@ namespace Agendado.Service
                 usuario.EmpresaId = usuarioLogado.EmpresaId;
 
                 await _usuarioRepository.SalvarUsuarioAsync(usuario);
-
+                   
                 await PrimeiroAcesso(identityUser);
                 return new DadosUsuarioResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.DDD, usuario.Telefone);
             }
@@ -200,6 +200,7 @@ namespace Agendado.Service
                 var usuario = await _userManager.FindByEmailAsync(dados.Email) ?? throw new Exception("Usuário não foi encontrado");
                 var result = await _userManager.ResetPasswordAsync(usuario, dados.Token, dados.NovoPassword);
                 if (usuario.PrimeiroLogin == true) {
+                    usuario.PrimeiroLogin = false;
                     await _usuarioRepository.UpdateUsuarioPrimeiroLoginAsync(usuario);
                 }
             }

@@ -71,6 +71,7 @@ builder.Services.AddRateLimiter(options =>
 });
 
 builder.Services.AddEmailConfiguration(builder.Configuration);
+builder.Services.AddAuthorization();
 
 var app = builder.Build();
 

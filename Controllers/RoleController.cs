@@ -20,6 +20,7 @@ namespace Agendado.Controllers
 
         [HttpPost("registrar-role")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> RegistrarRoleAsync(string papel)
         {
             var newRole = await _roleManager.FindByNameAsync(papel);
@@ -38,6 +39,7 @@ namespace Agendado.Controllers
 
         [HttpPost("atribuir-role")]
         [Authorize(Roles = "ADMIN")]
+        [Authorize(Policy = "OnboardingConcluido")]
         public async Task<IActionResult> AtribuirRoleAsync(string email, string papel)
         {
             var user = await _userManager.FindByEmailAsync(email);
