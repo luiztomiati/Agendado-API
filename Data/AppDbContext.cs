@@ -1,4 +1,5 @@
-﻿using Agendado.Domain.Model;
+﻿using Agendado.Domain.Entities;
+using Agendado.Domain.Model;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,6 +17,7 @@ namespace Agendado.Data
         public DbSet<Agenda> Agenda { get; set; }
         public DbSet<Empresa> Empresas { get; set; }
         public DbSet<ServicoUsuario> ServicoUsuarios { get; set; }
+        public DbSet<EmpresaFuncionamento> EmpresaFuncionamentos { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

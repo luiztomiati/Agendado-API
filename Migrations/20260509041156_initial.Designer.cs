@@ -12,20 +12,51 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agendado.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20260411023855_InitialClean")]
-    partial class InitialClean
+    [Migration("20260509041156_initial")]
+    partial class initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "8.0.25")
+                .HasAnnotation("ProductVersion", "8.0.26")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
-            modelBuilder.Entity("Agendado.Model.Agenda", b =>
+            modelBuilder.Entity("Agendado.Domain.Entities.EmpresaFuncionamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DiaSemana")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DtAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DtInclusao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<TimeOnly>("HoraFim")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly>("HoraInicio")
+                        .HasColumnType("time without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpresaId");
+
+                    b.ToTable("EmpresaFuncionamentos");
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.Agenda", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -71,7 +102,7 @@ namespace Agendado.Migrations
                     b.ToTable("Agenda");
                 });
 
-            modelBuilder.Entity("Agendado.Model.AgendadoUser", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.AgendadoUser", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("text");
@@ -113,6 +144,9 @@ namespace Agendado.Migrations
                     b.Property<bool>("PhoneNumberConfirmed")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("PrimeiroLogin")
+                        .HasColumnType("boolean");
+
                     b.Property<string>("RefreshToken")
                         .HasColumnType("text");
 
@@ -141,7 +175,7 @@ namespace Agendado.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("Agendado.Model.Atendimento", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Atendimento", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -156,26 +190,23 @@ namespace Agendado.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly>("HoraFim")
-                        .HasColumnType("date");
+                    b.Property<TimeOnly>("HoraFim")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<DateOnly>("HoraInicio")
-                        .HasColumnType("date");
+                    b.Property<TimeOnly>("HoraInicio")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<Guid>("Usuario")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UsuariosId")
+                    b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuariosId");
+                    b.HasIndex("UsuarioId");
 
                     b.ToTable("Atendimentos");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Cliente", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Cliente", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -195,6 +226,9 @@ namespace Agendado.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid");
+
                     b.Property<string>("Nome")
                         .IsRequired()
                         .HasColumnType("text");
@@ -205,16 +239,22 @@ namespace Agendado.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("EmpresaId");
+
                     b.ToTable("Cliente");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Empresa", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Empresa", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
                     b.Property<string>("Bairro")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Cep")
                         .IsRequired()
                         .HasColumnType("text");
 
@@ -228,10 +268,6 @@ namespace Agendado.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("Estado")
-                        .IsRequired()
-                        .HasColumnType("text");
-
                     b.Property<string>("Logradouro")
                         .IsRequired()
                         .HasColumnType("text");
@@ -240,15 +276,47 @@ namespace Agendado.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int>("numero")
-                        .HasColumnType("integer");
+                    b.Property<string>("Numero")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Uf")
+                        .IsRequired()
+                        .HasColumnType("text");
 
                     b.HasKey("Id");
 
                     b.ToTable("Empresas");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Servicos", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.ServicoUsuario", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<DateTime?>("DtAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DtInclusao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("ServicoId")
+                        .HasColumnType("uuid");
+
+                    b.Property<Guid>("UsuarioId")
+                        .HasColumnType("uuid");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ServicoId");
+
+                    b.HasIndex("UsuarioId");
+
+                    b.ToTable("ServicoUsuarios");
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.Servicos", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +352,7 @@ namespace Agendado.Migrations
                     b.ToTable("Servicos");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Usuario", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
@@ -458,27 +526,38 @@ namespace Agendado.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("Agendado.Model.Agenda", b =>
+            modelBuilder.Entity("Agendado.Domain.Entities.EmpresaFuncionamento", b =>
                 {
-                    b.HasOne("Agendado.Model.Cliente", "Cliente")
+                    b.HasOne("Agendado.Domain.Model.Empresa", "Empresa")
+                        .WithMany("Horarios")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.Agenda", b =>
+                {
+                    b.HasOne("Agendado.Domain.Model.Cliente", "Cliente")
                         .WithMany()
                         .HasForeignKey("ClienteId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Agendado.Model.Empresa", "Empresa")
+                    b.HasOne("Agendado.Domain.Model.Empresa", "Empresa")
                         .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Agendado.Model.Servicos", "Servicos")
+                    b.HasOne("Agendado.Domain.Model.Servicos", "Servicos")
                         .WithMany()
                         .HasForeignKey("ServicosId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Agendado.Model.Usuario", "Usuario")
+                    b.HasOne("Agendado.Domain.Model.Usuario", "Usuario")
                         .WithMany()
                         .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -493,21 +572,51 @@ namespace Agendado.Migrations
                     b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Atendimento", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Atendimento", b =>
                 {
-                    b.HasOne("Agendado.Model.Usuario", "Usuarios")
+                    b.HasOne("Agendado.Domain.Model.Usuario", "Usuario")
                         .WithMany("Atendimentos")
-                        .HasForeignKey("UsuariosId")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Usuarios");
+                    b.Navigation("Usuario");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Servicos", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Cliente", b =>
                 {
-                    b.HasOne("Agendado.Model.Empresa", "Empresa")
-                        .WithMany("Servicos")
+                    b.HasOne("Agendado.Domain.Model.Empresa", "empresa")
+                        .WithMany()
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("empresa");
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.ServicoUsuario", b =>
+                {
+                    b.HasOne("Agendado.Domain.Model.Servicos", "Servico")
+                        .WithMany()
+                        .HasForeignKey("ServicoId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Agendado.Domain.Model.Usuario", "Usuario")
+                        .WithMany()
+                        .HasForeignKey("UsuarioId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Servico");
+
+                    b.Navigation("Usuario");
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.Servicos", b =>
+                {
+                    b.HasOne("Agendado.Domain.Model.Empresa", "Empresa")
+                        .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -515,10 +624,10 @@ namespace Agendado.Migrations
                     b.Navigation("Empresa");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Usuario", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>
                 {
-                    b.HasOne("Agendado.Model.Empresa", "Empresa")
-                        .WithMany("Usuarios")
+                    b.HasOne("Agendado.Domain.Model.Empresa", "Empresa")
+                        .WithMany()
                         .HasForeignKey("EmpresaId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -537,7 +646,7 @@ namespace Agendado.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserClaim<string>", b =>
                 {
-                    b.HasOne("Agendado.Model.AgendadoUser", null)
+                    b.HasOne("Agendado.Domain.Model.AgendadoUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -546,7 +655,7 @@ namespace Agendado.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.HasOne("Agendado.Model.AgendadoUser", null)
+                    b.HasOne("Agendado.Domain.Model.AgendadoUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -561,7 +670,7 @@ namespace Agendado.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Agendado.Model.AgendadoUser", null)
+                    b.HasOne("Agendado.Domain.Model.AgendadoUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -570,21 +679,19 @@ namespace Agendado.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserToken<string>", b =>
                 {
-                    b.HasOne("Agendado.Model.AgendadoUser", null)
+                    b.HasOne("Agendado.Domain.Model.AgendadoUser", null)
                         .WithMany()
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("Agendado.Model.Empresa", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Empresa", b =>
                 {
-                    b.Navigation("Servicos");
-
-                    b.Navigation("Usuarios");
+                    b.Navigation("Horarios");
                 });
 
-            modelBuilder.Entity("Agendado.Model.Usuario", b =>
+            modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>
                 {
                     b.Navigation("Atendimentos");
                 });

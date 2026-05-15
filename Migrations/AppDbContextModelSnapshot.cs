@@ -22,6 +22,37 @@ namespace Agendado.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("Agendado.Domain.Entities.EmpresaFuncionamento", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("DiaSemana")
+                        .HasColumnType("integer");
+
+                    b.Property<DateTime?>("DtAlteracao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("DtInclusao")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("EmpresaId")
+                        .HasColumnType("uuid");
+
+                    b.Property<TimeOnly>("HoraFim")
+                        .HasColumnType("time without time zone");
+
+                    b.Property<TimeOnly>("HoraInicio")
+                        .HasColumnType("time without time zone");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("EmpresaId");
+
+                    b.ToTable("EmpresaFuncionamentos");
+                });
+
             modelBuilder.Entity("Agendado.Domain.Model.Agenda", b =>
                 {
                     b.Property<Guid>("Id")
@@ -65,7 +96,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("Agenda", (string)null);
+                    b.ToTable("Agenda");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.AgendadoUser", b =>
@@ -156,23 +187,20 @@ namespace Agendado.Migrations
                     b.Property<DateTime>("DtInclusao")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateOnly>("HoraFim")
-                        .HasColumnType("date");
+                    b.Property<TimeOnly>("HoraFim")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<DateOnly>("HoraInicio")
-                        .HasColumnType("date");
+                    b.Property<TimeOnly>("HoraInicio")
+                        .HasColumnType("time without time zone");
 
-                    b.Property<Guid>("Usuario")
-                        .HasColumnType("uuid");
-
-                    b.Property<Guid>("UsuariosId")
+                    b.Property<Guid>("UsuarioId")
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UsuariosId");
+                    b.HasIndex("UsuarioId");
 
-                    b.ToTable("Atendimentos", (string)null);
+                    b.ToTable("Atendimentos");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Cliente", b =>
@@ -210,7 +238,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Cliente", (string)null);
+                    b.ToTable("Cliente");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Empresa", b =>
@@ -255,7 +283,7 @@ namespace Agendado.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Empresas", (string)null);
+                    b.ToTable("Empresas");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.ServicoUsuario", b =>
@@ -282,7 +310,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("UsuarioId");
 
-                    b.ToTable("ServicoUsuarios", (string)null);
+                    b.ToTable("ServicoUsuarios");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Servicos", b =>
@@ -318,7 +346,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Servicos", (string)null);
+                    b.ToTable("Servicos");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>
@@ -360,7 +388,7 @@ namespace Agendado.Migrations
 
                     b.HasIndex("EmpresaId");
 
-                    b.ToTable("Usuarios", (string)null);
+                    b.ToTable("Usuarios");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -495,6 +523,17 @@ namespace Agendado.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
+            modelBuilder.Entity("Agendado.Domain.Entities.EmpresaFuncionamento", b =>
+                {
+                    b.HasOne("Agendado.Domain.Model.Empresa", "Empresa")
+                        .WithMany("Horarios")
+                        .HasForeignKey("EmpresaId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empresa");
+                });
+
             modelBuilder.Entity("Agendado.Domain.Model.Agenda", b =>
                 {
                     b.HasOne("Agendado.Domain.Model.Cliente", "Cliente")
@@ -532,13 +571,13 @@ namespace Agendado.Migrations
 
             modelBuilder.Entity("Agendado.Domain.Model.Atendimento", b =>
                 {
-                    b.HasOne("Agendado.Domain.Model.Usuario", "Usuarios")
+                    b.HasOne("Agendado.Domain.Model.Usuario", "Usuario")
                         .WithMany("Atendimentos")
-                        .HasForeignKey("UsuariosId")
+                        .HasForeignKey("UsuarioId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.Navigation("Usuarios");
+                    b.Navigation("Usuario");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Cliente", b =>
@@ -642,6 +681,11 @@ namespace Agendado.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("Agendado.Domain.Model.Empresa", b =>
+                {
+                    b.Navigation("Horarios");
                 });
 
             modelBuilder.Entity("Agendado.Domain.Model.Usuario", b =>

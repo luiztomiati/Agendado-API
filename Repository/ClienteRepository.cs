@@ -1,10 +1,8 @@
 ﻿using Agendado.Application.DTOs;
 using Agendado.Data;
-using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Shared;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.VisualBasic;
 
 namespace Agendado.Repository
 {

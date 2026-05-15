@@ -26,9 +26,9 @@ namespace Agendado.Controllers
                 var clientes = await _clienteService.GetClientesAsync(page, qtdPag);
                 return Ok(clientes);
             }
-            catch (Exception ex)
+            catch (Exception)
             { 
-                return BadRequest(ex.Message);
+                return BadRequest("Erro ao buscar os clientes.");
             }
         }
     }

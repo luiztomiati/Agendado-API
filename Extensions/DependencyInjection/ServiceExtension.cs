@@ -15,6 +15,7 @@ namespace Agendado.Extensions.DependencyInjection
             services.AddScoped<IServicoUsuarioService, ServicoUsuarioService>();
             services.AddScoped<IClienteService, ClienteService>();
             services.AddHttpClient<ICepService, CepService>();
+            services.AddScoped<IAtendimentoService, AtendimentoService>();
 
             return services;
         }

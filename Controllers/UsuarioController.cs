@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Application.DTOs;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
@@ -31,9 +32,9 @@ namespace Agendado.Controllers
                 var usuario = await _usuarioService.CriarUsuarioAsync(dados);
                 return Ok(usuario);
             }
-            catch (Exception ex) 
+            catch (Exception) 
             { 
-                return BadRequest(ex.Message);            
+                return BadRequest("Não foi possivel criar o usuário.");            
             }
         }
         [HttpPut("editar/{id}")]
@@ -46,9 +47,9 @@ namespace Agendado.Controllers
                 var usuario = await _usuarioService.EditarUsuarioAsync(id, dados);
                 return Ok(usuario);
 
-            }catch(Exception ex)
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Não foi possivel editar o usuário.");
             }
           
         }
@@ -62,9 +63,9 @@ namespace Agendado.Controllers
                 await _usuarioService.DeletarUsuarioAsync(id);
                 return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return NotFound(ex.Message);
+                return NotFound("Não foi possível deletar o usuário.");
             }
         }
 
@@ -77,11 +78,11 @@ namespace Agendado.Controllers
             try
             {
                 await _usuarioService.ResetarPasswordAsync(dados);
-                return Ok();
+                return Ok("Senha resetada com sucesso");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Não foi possivel resetar a senha.");
             }
         }
         [HttpPost("esqueci-minha-senha")]
@@ -92,10 +93,10 @@ namespace Agendado.Controllers
             try
             {
                 var result = await _usuarioService.ResgatarPasswordAsync(dados);
-                return Ok(result);
-            }catch(Exception ex)
+                return Ok("Se o Email estiver cadastrado na nossa base de dados, você receberá instruções para redefinir sua senha.");
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Não foi possível processar sua solicitação no momento.");
             }
         }
         [HttpPost("resetar-password-token")]
@@ -106,10 +107,10 @@ namespace Agendado.Controllers
             try
             {
                 await _usuarioService.ResetarPasswordTokenAsync(dados);
-                return Ok();
-            }catch(Exception ex)
+                return Ok("Senha resetada com Sucesso");
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Não foi possivel resetar a senha.");
             }
         }
 
@@ -123,9 +124,9 @@ namespace Agendado.Controllers
                 var usuarios = await _usuarioService.GetUsuariosAsync(page, qtdPag);
                 return Ok(usuarios);
 
-            }catch(Exception ex)
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Erro ao buscar os usuários.");
             }
         }
 
@@ -137,12 +138,23 @@ namespace Agendado.Controllers
             try
             {
                 var usuario = await _usuarioRepository.GetUsuarioByIdAsync(usuarioId);
-                return Ok();
-            }catch(Exception ex)
+                return Ok(usuario);
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest("Erro ao buscar os usuário.");
             }
         }
 
+        [HttpGet("confirmar-email")]
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmarEmail(string usuarioId, string token) {
+            try {
+                await _usuarioService.ConfirmarEmailTokenAsync(usuarioId, token);
+                return Ok("Confirmação realizada com sucesso.");
+            }catch(Exception) {
+                return BadRequest("Erro na confirmação do Email.");
+            
+            }
+        }
     }
 }

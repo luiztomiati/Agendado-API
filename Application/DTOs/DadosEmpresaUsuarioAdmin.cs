@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Agendado.Application.DTOs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Agendado.Application.Dto
 {
@@ -38,5 +39,6 @@ namespace Agendado.Application.Dto
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$",
         ErrorMessage = "A senha deve conter ao menos uma letra maiúscula, uma minúscula, um número e um caractere especial.")]
         public string Password { get; set; } = string.Empty;
+        public List<DadosHorarioEmpresa> Horarios { get; set; } = new();
     }
 }

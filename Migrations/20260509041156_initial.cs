@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Agendado.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialClean : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -33,6 +33,7 @@ namespace Agendado.Migrations
                     Id = table.Column<string>(type: "text", nullable: false),
                     RefreshToken = table.Column<string>(type: "text", nullable: true),
                     TempoExpiracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    PrimeiroLogin = table.Column<bool>(type: "boolean", nullable: false),
                     UserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     NormalizedUserName = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
                     Email = table.Column<string>(type: "character varying(256)", maxLength: 256, nullable: true),
@@ -54,33 +55,17 @@ namespace Agendado.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Cliente",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uuid", nullable: false),
-                    Nome = table.Column<string>(type: "text", nullable: false),
-                    DDD = table.Column<string>(type: "text", nullable: false),
-                    Telefone = table.Column<string>(type: "text", nullable: false),
-                    Email = table.Column<string>(type: "text", nullable: false),
-                    DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Cliente", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Empresas",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Nome = table.Column<string>(type: "text", nullable: false),
+                    Numero = table.Column<string>(type: "text", nullable: false),
+                    Cep = table.Column<string>(type: "text", nullable: false),
+                    Cidade = table.Column<string>(type: "text", nullable: false),
+                    Uf = table.Column<string>(type: "text", nullable: false),
                     Logradouro = table.Column<string>(type: "text", nullable: false),
                     Bairro = table.Column<string>(type: "text", nullable: false),
-                    numero = table.Column<int>(type: "integer", nullable: false),
-                    Cidade = table.Column<string>(type: "text", nullable: false),
-                    Estado = table.Column<string>(type: "text", nullable: false),
                     DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -196,6 +181,53 @@ namespace Agendado.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Cliente",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    Nome = table.Column<string>(type: "text", nullable: false),
+                    DDD = table.Column<string>(type: "text", nullable: false),
+                    Telefone = table.Column<string>(type: "text", nullable: false),
+                    Email = table.Column<string>(type: "text", nullable: false),
+                    EmpresaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Cliente", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Cliente_Empresas_EmpresaId",
+                        column: x => x.EmpresaId,
+                        principalTable: "Empresas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "EmpresaFuncionamentos",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    EmpresaId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DiaSemana = table.Column<int>(type: "integer", nullable: false),
+                    HoraInicio = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    HoraFim = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_EmpresaFuncionamentos", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_EmpresaFuncionamentos_Empresas_EmpresaId",
+                        column: x => x.EmpresaId,
+                        principalTable: "Empresas",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Servicos",
                 columns: table => new
                 {
@@ -294,10 +326,9 @@ namespace Agendado.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     DiaSemana = table.Column<int>(type: "integer", nullable: false),
-                    HoraInicio = table.Column<DateOnly>(type: "date", nullable: false),
-                    HoraFim = table.Column<DateOnly>(type: "date", nullable: false),
-                    Usuario = table.Column<Guid>(type: "uuid", nullable: false),
-                    UsuariosId = table.Column<Guid>(type: "uuid", nullable: false),
+                    HoraInicio = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    HoraFim = table.Column<TimeOnly>(type: "time without time zone", nullable: false),
+                    UsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
                     DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
@@ -305,8 +336,35 @@ namespace Agendado.Migrations
                 {
                     table.PrimaryKey("PK_Atendimentos", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Atendimentos_Usuarios_UsuariosId",
-                        column: x => x.UsuariosId,
+                        name: "FK_Atendimentos_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
+                        principalTable: "Usuarios",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "ServicoUsuarios",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    UsuarioId = table.Column<Guid>(type: "uuid", nullable: false),
+                    ServicoId = table.Column<Guid>(type: "uuid", nullable: false),
+                    DtInclusao = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    DtAlteracao = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ServicoUsuarios", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ServicoUsuarios_Servicos_ServicoId",
+                        column: x => x.ServicoId,
+                        principalTable: "Servicos",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ServicoUsuarios_Usuarios_UsuarioId",
+                        column: x => x.UsuarioId,
                         principalTable: "Usuarios",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -370,14 +428,34 @@ namespace Agendado.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Atendimentos_UsuariosId",
+                name: "IX_Atendimentos_UsuarioId",
                 table: "Atendimentos",
-                column: "UsuariosId");
+                column: "UsuarioId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Cliente_EmpresaId",
+                table: "Cliente",
+                column: "EmpresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_EmpresaFuncionamentos_EmpresaId",
+                table: "EmpresaFuncionamentos",
+                column: "EmpresaId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Servicos_EmpresaId",
                 table: "Servicos",
                 column: "EmpresaId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicoUsuarios_ServicoId",
+                table: "ServicoUsuarios",
+                column: "ServicoId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ServicoUsuarios_UsuarioId",
+                table: "ServicoUsuarios",
+                column: "UsuarioId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Usuarios_EmpresaId",
@@ -410,16 +488,22 @@ namespace Agendado.Migrations
                 name: "Atendimentos");
 
             migrationBuilder.DropTable(
-                name: "Cliente");
+                name: "EmpresaFuncionamentos");
 
             migrationBuilder.DropTable(
-                name: "Servicos");
+                name: "ServicoUsuarios");
+
+            migrationBuilder.DropTable(
+                name: "Cliente");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Servicos");
 
             migrationBuilder.DropTable(
                 name: "Usuarios");

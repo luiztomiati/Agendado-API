@@ -1,6 +1,7 @@
 ﻿using Agendado.Application.Dto;
 using Agendado.Domain.Model;
 using Agendado.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
@@ -37,6 +38,7 @@ namespace Agendado.Controllers
             var result = await _signInManager.CheckPasswordSignInAsync(user, usuario.Password, lockoutOnFailure: false);
             if (!result.Succeeded)
             {
+
                 return BadRequest("Falha no login do usuário.");
             }
             

@@ -8,6 +8,8 @@
             {
                 options.AddPolicy("OnboardingConcluido", policy =>
                     policy.RequireClaim("PrimeiroLogin", "false"));
+                options.AddPolicy("EmailConfirmado", policy =>
+                    policy.RequireClaim("EmailConfirmed", "true"));
             });
 
             return services;

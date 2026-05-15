@@ -1,4 +1,5 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Domain.Model;
 using Agendado.Interface.Service;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -16,22 +17,22 @@ namespace Agendado.Controllers
             _servicoService = servicoService;
         }
 
-        [HttpPost("criar")]
-        [Authorize(Roles = "ADMIN")]
-        [Authorize(Policy = "OnboardingConcluido")]
-        public async Task<IActionResult> PostServico(DadosServico dados)
-        {
-            try
-            {
-                await _servicoService.CriarServicoAsync(dados);
-                return Ok();
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, ex.Message);
-            }
+        //[HttpPost("criar")]
+        //[Authorize(Roles = "ADMIN")]
+        //[Authorize(Policy = "OnboardingConcluido")]
+        //public async Task<IActionResult> PostServico(DadosServico dados)
+        //{
+        //    try
+        //    {
+        //        var servico = await _servicoService.CriarServicoAsync(dados);
+        //        return CreatedAtAction(nameof(GetServicoById) new {id = servico.Id} servico);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        return StatusCode(500, new { mensagem = "Não foi possível criar o serviço." });
+        //    }
 
-        }
+        //}
         [HttpPut("editar/{id}")]
         [Authorize(Roles = "ADMIN")]
         [Authorize(Policy = "OnboardingConcluido")]
@@ -40,11 +41,11 @@ namespace Agendado.Controllers
             try
             {
                 await _servicoService.EditarServicoAsync(id, dados);
-                return Ok();
+                return NoContent();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                return BadRequest(ex.Message);
+                return StatusCode(500, new { mensagem = "Não foi possível editar o serviço." });
             }
         }
         [HttpDelete("deletar/{id}")]
@@ -57,9 +58,9 @@ namespace Agendado.Controllers
                 await _servicoService.DeletarServicoAsync(id);
                 return Ok();
 
-            }catch(Exception ex)
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Menssagem = "Não foi possivel deletar o serviço" });
             }
         }
 
@@ -72,9 +73,9 @@ namespace Agendado.Controllers
             {
                 var servico = await _servicoService.GetServicoByIdAsync(servicoId);
                 return Ok(servico);
-            }catch(Exception ex)
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Menssagem = "Erro ao buscar os serviços"});
             }
         }
 
@@ -87,9 +88,9 @@ namespace Agendado.Controllers
             {
                 var servico = await _servicoService.ListServicosAsync(page, qtdPag);
                 return Ok(servico);
-            }catch(Exception ex)
+            }catch(Exception)
             {
-                return BadRequest(ex.Message);
+                return BadRequest(new { Menssagem = "Erro ao buscar o serviço" });
             }
         }
     }

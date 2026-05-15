@@ -12,6 +12,8 @@ namespace Agendado.Extensions.DependencyInjection
             services.AddScoped<IServicoRepository, ServicoRepository>();
             services.AddScoped<IServicoUsuarioRepository, ServicoUsuarioRepository>();
             services.AddScoped<IClienteRepository, ClienteRepository>();
+            services.AddScoped<IAtendimentoRepository, AtendimentoRepository>();
+            services.AddScoped<IEmpresaAtendimentoRepository, EmpresaAtendimentoRepository>();
 
             return services;
         }

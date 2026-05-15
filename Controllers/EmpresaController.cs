@@ -24,8 +24,8 @@ namespace Agendado.Controllers
                 await _empresaService.CriarEmpresaUsuarioAdminAsync(dados);
                 return Ok();
             }
-            catch (Exception ex) { 
-                return StatusCode(500, ex.Message);
+            catch (Exception) { 
+                return StatusCode(500, "Erro ao criar empresa.");
             }
         }
     }

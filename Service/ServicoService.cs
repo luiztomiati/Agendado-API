@@ -22,7 +22,7 @@ namespace Agendado.Service
             _empresaRepository = empresaRepository;
         }
 
-        public async Task CriarServicoAsync(DadosServico dados)
+        public async Task<Servicos> CriarServicoAsync(DadosServico dados)
         {
             var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
             var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário logado não encontrado");
@@ -31,6 +31,7 @@ namespace Agendado.Service
             servico.EmpresaId = usuarioLogado.EmpresaId;
 
             await _servicoRepository.SalvarServicoAsync(servico);
+            return servico;
         }
         public async Task EditarServicoAsync(Guid id, DadosServico dados) {
             var servico = await _servicoRepository.GetServicoByIdAsync(id) ?? throw new KeyNotFoundException("Serviço não encontrado");

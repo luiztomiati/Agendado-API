@@ -1,4 +1,4 @@
-﻿using System.Globalization;
+﻿using Agendado.Domain.Entities;
 
 namespace Agendado.Domain.Model
 {
@@ -11,6 +11,7 @@ namespace Agendado.Domain.Model
         public string Uf {  get; set; } = string.Empty;
         public string Logradouro {  get; set; } = string.Empty;
         public string Bairro {  get; set; } = string.Empty;
+        public List<EmpresaFuncionamento> Horarios { get; set; } = new();
         public Empresa(string nome, string numero, string cep, string cidade, string uf, string logradouro, string bairro)
         {
             Nome = nome;
@@ -20,6 +21,7 @@ namespace Agendado.Domain.Model
             Uf = uf;
             Logradouro = logradouro;
             Bairro = bairro;
+            Horarios = new();
         }
     }
 }

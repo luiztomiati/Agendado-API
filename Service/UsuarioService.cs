@@ -1,12 +1,11 @@
 ﻿using Agendado.Application.Dto;
+using Agendado.Application.DTOs;
+using Agendado.Domain.Entities;
 using Agendado.Domain.Model;
 using Agendado.Interface.Repository;
 using Agendado.Interface.Service;
 using Agendado.Shared;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.VisualBasic;
-using System.Linq.Dynamic.Core.Tokenizer;
 using System.Security.Claims;
 using System.Security.Cryptography;
 
@@ -19,19 +18,23 @@ namespace Agendado.Service
         private readonly IHttpContextAccessor _httpContextAcessor;
         private readonly IEmailService _emailSettings;
         private readonly IEmpresaRepository _empresaRepository;
+        private readonly IAtendimentoService _atendimentoService;
+        private readonly IEmpresaAtendimentoRepository _empresaAtendimentoRepository;
+        private readonly IAtendimentoRepository _atendimentoRepository;
 
-        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor, IEmailService emailSettings, IEmpresaRepository empresaRepository)
+        public UsuarioService(IUsuarioRepository usuarioRepository, UserManager<AgendadoUser> userManager, IHttpContextAccessor httpContentAccessor, IEmailService emailSettings, IEmpresaRepository empresaRepository, IAtendimentoService atendimentoService, IEmpresaAtendimentoRepository empresaAtendimentoRepository, IAtendimentoRepository atendimentoRepository)
         {
-
             _usuarioRepository = usuarioRepository;
             _userManager = userManager;
             _httpContextAcessor = httpContentAccessor;
             _emailSettings = emailSettings;
             _empresaRepository = empresaRepository;
+            _atendimentoService = atendimentoService;
+            _empresaAtendimentoRepository = empresaAtendimentoRepository;
+            _atendimentoRepository = atendimentoRepository;
         }
         public async Task<DadosUsuarioResponse> CriarUsuarioAsync(DadosUsuarioRequest dados)
         {
-
             var userId = _httpContextAcessor.HttpContext?.User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? throw new Exception("Usuário não encontrado");
             var usuarioLogado = await _usuarioRepository.GetIdentityUserAsync(userId) ?? throw new Exception("Usuário logado não encontrado");
             var userExists = await _userManager.FindByEmailAsync(dados.Email);
@@ -41,13 +44,13 @@ namespace Agendado.Service
                 throw new Exception("Email já está em uso");
             }
 
-            Usuario usuario = new Usuario(dados);
             var identityUser = new AgendadoUser
             {
                 UserName = dados.Email,
                 Email = dados.Email,
                 PrimeiroLogin = true,
             };
+            Usuario usuario = new Usuario(dados.Nome,dados.DDD, dados.Telefone,dados.Email,usuarioLogado.EmpresaId, identityUser.Id);
 
             try
             {
@@ -60,15 +63,13 @@ namespace Agendado.Service
                         string.Join(", ", result.Errors.Select(e => e.Description)));
                 }
                 await _userManager.AddToRoleAsync(identityUser, "USER");
-                usuario.IdentityUserId = identityUser.Id;
-                usuario.EmpresaId = usuarioLogado.EmpresaId;
-
+                await _atendimentoService.HorarioAtendimentoPadrao(usuario);
                 await _usuarioRepository.SalvarUsuarioAsync(usuario);
-                   
-                await PrimeiroAcesso(identityUser);
+                await EnviarConfirmacaoEmail(identityUser);
+
                 return new DadosUsuarioResponse(usuario.Id, usuario.Nome, usuario.Email, usuario.DDD, usuario.Telefone);
             }
-            catch (Exception ex)
+            catch (Exception ex) 
             {
                 await _userManager.DeleteAsync(identityUser);
                 throw new Exception(ex.Message);
@@ -131,7 +132,6 @@ namespace Agendado.Service
             {
                 identityUser.Email = emailAntigo;
                 identityUser.UserName = userNameAntigo;
-
                 await _userManager.UpdateAsync(identityUser);
                 throw new Exception(ex.Message);
             }
@@ -264,9 +264,10 @@ namespace Agendado.Service
             }
             
             var token = await _userManager.GeneratePasswordResetTokenAsync(user);
-            var usuario = await _usuarioRepository.GetIdentityUserAsync(user.Id);
-            var empresa = await _empresaRepository.GetEmpresaByIdAsync(usuario.EmpresaId);
 
+            var usuario = await _usuarioRepository.GetIdentityUserAsync(user.Id);
+
+            var empresa = await _empresaRepository.GetEmpresaByIdAsync(usuario.EmpresaId);
             string corpoHtml = $@"
 <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; text-align: center; border: 1px solid #eee; padding: 20px;'>
     <h2 style='color: #333;'>Bem-vindo ao Agendado!</h2>
@@ -304,6 +305,69 @@ namespace Agendado.Service
                 (senha[i], senha[j]) = (senha[j], senha[i]);
             }
             return new string(senha);
+        }
+
+        private async Task EnviarConfirmacaoEmail(AgendadoUser identityUser)
+        {
+            var user = await _userManager.FindByEmailAsync(identityUser.Email) ?? throw new Exception("Usuário não encontrado");
+
+            var usuario = await _usuarioRepository.GetIdentityUserAsync(user.Id.ToString()) ?? throw new Exception("Usuário não encontrado");
+            
+            var empresa = await _empresaRepository.GetEmpresaByIdAsync(usuario.EmpresaId);
+
+            var token = await _userManager.GenerateEmailConfirmationTokenAsync(user);  
+
+            var baseUrl = Environment.GetEnvironmentVariable("BASE__URL");
+
+            var linkConfirmacao = $"{baseUrl}/api/Usuario/confirmar-email?usuarioId={user.Id}&token={token}";
+
+            string body = @$"
+<div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; text-align: center; border: 1px solid #eee; padding: 20px;'>
+    <h2 style='color: #333;'>Confirme seu e-mail</h2>
+    
+    <p style='color: #666;'>Olá!</p>
+    
+    <p style='color: #666;'>
+        Você está quase pronto para começar a usar o sistema da <strong>{empresa?.Nome}</strong>.
+    </p>
+    
+    <p style='color: #666;'>
+        Para garantir a segurança da sua conta, precisamos que você confirme seu endereço de e-mail:
+    </p>
+    
+    <div style='margin: 30px 0;'>
+        <a href='{linkConfirmacao}' 
+           style='background-color: #28a745; color: white; padding: 15px 25px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;'>
+            Confirmar Meu E-mail
+        </a>
+    </div>
+  
+    <p style='font-size: 12px; color: #999;'>
+        Este link pode expirar por motivos de segurança.
+    </p>
+    
+    <hr style='border: 0; border-top: 1px solid #eee; margin: 20px 0;' />
+    
+    <p style='font-size: 12px; color: #999;'>
+        Se você não solicitou este e-mail, pode ignorá-lo com segurança.
+    </p>
+</div>";
+            await _emailSettings.EnviarEmailAsync(new List<string> { usuario.Email }, "Confirmação de Email", body, null);
+        }
+
+        public async Task ConfirmarEmailTokenAsync(string usuarioId,string token)
+        {
+            try
+            {
+                var user = await _userManager.FindByIdAsync(usuarioId) ?? throw new Exception("Usuário não encontrado");
+                await _userManager.ConfirmEmailAsync(user, token);
+                if (user.PrimeiroLogin)
+                {
+                    await PrimeiroAcesso(user);
+                }
+            } catch (Exception) {
+                throw new Exception("Erro ao confirmar email");
+            }
         }
     }
 }
